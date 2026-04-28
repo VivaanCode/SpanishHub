@@ -1,610 +1,687 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Spanish Vocab Quiz</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: #f3efe8;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spanish 1 Practice Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --background: #F3F4F6;
+            --surface: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --border: #E5E7EB;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
 
-    #quiz-box {
-      max-width: 520px;
-      margin: 20px auto;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 2px 16px 0 #bbb;
-      padding: 2em 1.5em 1em 1.5em;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
 
-    @media (max-width: 600px) {
-      #quiz-box {
-        max-width: 99vw;
-        padding: 1em 0.4em 0.7em 0.4em;
-      }
-      h2 { font-size: 1.08em; }
-    }
+        body {
+            background-color: var(--background);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-    h2 {
-      font-size: 1.2em;
-      margin-bottom: 0.4em;
-    }
+        /* Header */
+        header {
+            background-color: var(--surface);
+            padding: 1.25rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    input[type="text"], button {
-      font-size: 1.1em;
-      width: 100%;
-      padding: 0.6em;
-      margin-top: 0.2em;
-      border-radius: 5px;
-      border: 1px solid #b1b1b1;
-      box-sizing: border-box;
-    }
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
 
-    input[type='text']:focus {
-      outline: 2px solid #adb5bd;
-      background: #f8f9fa;
-    }
+        .settings-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
 
-    button {
-      background: #388e3c;
-      color: #fff;
-      border: none;
-      font-weight: 500;
-      cursor: pointer;
-      margin-bottom: 0.8em;
-      transition: background 0.12s;
-    }
+        .settings-btn:hover {
+            color: var(--primary);
+            transform: rotate(45deg);
+        }
 
-    button:active, button:focus {
-      background: #256029;
-    }
+        /* Main Container */
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
 
-    #check-btn {
-      display: block;
-    }
+        /* Dashboard Views */
+        .view-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
 
-    @media (min-width: 601px) {
-      #check-btn {
-        display: none;
-      }
-    }
+        .view-section.active {
+            display: block;
+        }
 
-    #feedback {
-      font-weight: bold;
-      min-height: 24px;
-      margin-top: 10px;
-      transition: color 0.2s;
-    }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    .stats-history-section {
-      background: #f6f4ec;
-      margin: 24px -24px 0 -24px;
-      padding: 16px 24px 1px 24px;
-      border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px;
-      box-sizing: border-box;
-      overflow-x: auto;
-    }
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
 
-    @media (max-width: 600px) {
-      .stats-history-section {
-        margin: 18px -10px 0 -10px;
-        padding: 14px 9px 0.5px 9px;
-      }
-    }
+        .card-btn {
+            background-color: var(--surface);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-decoration: none;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
 
-    .scorebox {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.8em;
-      font-size: 1.08em;
-    }
+        .card-btn:hover:not(.disabled) {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
 
-    .scorebox .right { color: #1a7e24; }
-    .scorebox .wrong { color: #d32f2f; }
-    .score-label { font-variant: small-caps; }
+        .card-btn.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
 
-    #history-list {
-      list-style: none;
-      margin: 0.5em 0 0 0;
-      padding: 0;
-      max-height: 180px;
-      overflow-y: auto;
-    }
+        .card-btn h2 {
+            font-size: 1.25rem;
+        }
 
-    .history-item {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      margin-bottom: 4px;
-      padding: 5px 0 5px 0;
-      border-bottom: 1px dotted #e8e5c7;
-    }
+        .card-btn p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
 
-    .history-item:last-child { border-bottom: none; }
-    .correct { color: #1b8c18; }
-    .incorrect { color: #d32f2f; }
-    .qeng { flex: 3; }
-    .userans { flex: 2; padding-left: 12px; font-style: italic; }
-    .corrans { flex: 2; padding-left: 12px; }
+        .icon {
+            font-size: 2.5rem;
+        }
 
-    @media (max-width:600px) {
-      .scorebox { font-size: 0.99em; }
-      .userans, .corrans { padding-left: 7px; }
-    }
+        /* Settings Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+        }
 
-    /* Modal overlay (responsive) */
-    #vocab-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.45);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
 
-    #vocab-modal.hidden {
-      display: none;
-    }
+        .modal {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow);
+            transform: scale(0.95);
+            transition: var(--transition);
+        }
 
-    .vocab-modal-content {
-      background: #ffffff;
-      max-width: 480px;
-      width: 90vw;
-      padding: 1.3em 1.1em 1.1em 1.1em;
-      border-radius: 10px;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
-      box-sizing: border-box;
-    }
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
 
-    .vocab-modal-content h3 {
-      margin: 0 0 0.6em 0;
-      font-size: 1.1em;
-    }
+        .modal h2 {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
 
-    .vocab-modal-content p {
-      margin: 0;
-      font-size: 0.98em;
-      line-height: 1.4;
-    }
+        .preset-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
 
-    .vocab-modal-content a {
-      color: #1976d2;
-      text-decoration: underline;
-      word-break: break-word;
-    }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
 
-    .vocab-modal-close {
-      border: none;
-      background: transparent;
-      font-size: 1.4em;
-      line-height: 1;
-      cursor: pointer;
-      float: right;
-      margin-left: 0.5em;
-      padding: 0;
-    }
+        .btn:hover { background-color: var(--primary-hover); }
+        .btn-outline { background-color: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background-color: var(--primary); color: white; }
+        
+        .unit-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
 
-    @media (max-width: 480px) {
-      .vocab-modal-content {
-        width: 94vw;
-        padding: 1.1em 0.9em 0.9em 0.9em;
-      }
-      .vocab-modal-content h3 {
-        font-size: 1em;
-      }
-      .vocab-modal-content p {
-        font-size: 0.94em;
-      }
-    }
-  </style>
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            accent-color: var(--primary);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            perspective: 1000px;
+            width: 100%;
+            height: 300px;
+            margin: 2rem 0;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            border-radius: 12px;
+        }
+
+        .flashcard.is-flipped {
+            transform: rotateX(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        .card-back {
+            transform: rotateX(180deg);
+            background: #FAFAFA;
+            color: var(--primary);
+        }
+        
+        .card-hint {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+            font-weight: 400;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+        }
+
+        /* Quiz */
+        .quiz-card {
+            background: var(--surface);
+            padding: 2.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .quiz-prompt {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .quiz-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            transition: var(--transition);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .quiz-input:focus {
+            border-color: var(--primary);
+        }
+
+        .feedback {
+            font-size: 1.1rem;
+            font-weight: 600;
+            min-height: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feedback.correct { color: var(--secondary); }
+        .feedback.incorrect { color: var(--danger); }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-btn:hover { color: var(--primary); }
+
+        .vocab-count {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            header { padding: 1rem; }
+            main { padding: 1rem; }
+            .flashcard-container { height: 250px; }
+            .card-face { font-size: 1.25rem; }
+            .preset-buttons { flex-direction: column; }
+        }
+    </style>
 </head>
-
 <body>
-  <div id="quiz-box">
-    <h2>Spanish Vocab Quiz (Complete)</h2>
-    <div id="question"></div>
-    <input type="text" id="answer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-      placeholder="Type answer using accents if needed" />
-    <button id="check-btn" onclick="checkAnswer()">✓ Check</button>
-    <button onclick="checkAnswer()" style="display:none;">Check Answer</button>
-    <div id="feedback"></div>
-    <div class="stats-history-section">
-      <div class="scorebox">
-        <span class="score-label right">Right: <span id="right">0</span></span>
-        <span class="score-label wrong">Wrong: <span id="wrong">0</span></span>
-      </div>
-      <div style="font-size:0.95em; color:#767; margin-bottom:8px;">History:</div>
-      <ul id="history-list"></ul>
+
+    <header>
+        <h1>Spanish 1 Practice</h1>
+        <button class="settings-btn" id="openSettingsBtn" title="Settings">⚙️</button>
+    </header>
+
+    <main>
+        <div id="vocabCountDisplay" class="vocab-count">Loading vocabulary...</div>
+
+        <section id="dashboardView" class="view-section active">
+            <div class="dashboard-grid">
+                <div class="card-btn" onclick="app.startMode('flashcards')">
+                    <div class="icon">📇</div>
+                    <h2>Flashcards</h2>
+                    <p>Review vocabulary at your own pace.</p>
+                </div>
+                <div class="card-btn" onclick="app.startMode('quiz')">
+                    <div class="icon">✍️</div>
+                    <h2>Strict Quiz</h2>
+                    <p>Type exactly. Case & accents matter!</p>
+                </div>
+                <a href="/cultura" class="card-btn">
+                    <div class="icon">🌎</div>
+                    <h2>Semester 1 Cultura</h2>
+                    <p>Review cultural notes.</p>
+                </a>
+                <div class="card-btn disabled">
+                    <div class="icon">⏳</div>
+                    <h2>Semester 2 Cultura</h2>
+                    <p>Coming Soon...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="flashcardsView" class="view-section">
+            <div class="top-bar">
+                <button class="back-btn" onclick="app.showDashboard()">← Back</button>
+                <span id="fcProgress">1 / 10</span>
+            </div>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard" onclick="app.flipCard()">
+                    <div class="card-face">
+                        <span id="fcFront">Word</span>
+                        <span class="card-hint">Click to flip</span>
+                    </div>
+                    <div class="card-face card-back">
+                        <span id="fcBack">Translation</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-outline" onclick="app.prevCard()">Previous</button>
+                <button class="btn" onclick="app.nextCard()">Next Word</button>
+            </div>
+        </section>
+
+        <section id="quizView" class="view-section">
+            <div class="top-bar">
+                <button class="back-btn" onclick="app.showDashboard()">← Back</button>
+                <span id="quizProgress">1 / 10</span>
+            </div>
+
+            <div class="quiz-card">
+                <div class="quiz-prompt">Translate: <br><span id="quizWord" style="color:var(--primary); margin-top: 0.5rem; display:block;">Word</span></div>
+                <input type="text" id="quizInput" class="quiz-input" placeholder="Type the Spanish exact match..." autocomplete="off">
+                <div id="quizFeedback" class="feedback"></div>
+                <button id="quizSubmitBtn" class="btn" style="width: 100%; font-size: 1.1rem; padding: 1rem;" onclick="app.checkQuiz()">Submit</button>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <h2>Select Units to Study</h2>
+            <div class="preset-buttons">
+                <button class="btn btn-outline" onclick="app.applyPreset('sem1')">Semester 1 (Prelim-3)</button>
+                <button class="btn btn-outline" onclick="app.applyPreset('sem2')">Semester 2 (4-6)</button>
+            </div>
+            <div class="unit-list" id="unitCheckboxes">
+                </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="app.closeSettings()">Save & Close</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Modal (opens on page load) -->
-  <div id="vocab-modal" aria-modal="true" role="dialog">
-    <div class="vocab-modal-content">
-      <button class="vocab-modal-close" aria-label="Close notice">&times;</button>
-      <h3>Vocabulary Update</h3>
-      <p>
-        Vocabulary updated for all final vocabulary. Full vocabulary list is
-        <a href="https://docs.google.com/document/d/1QtoztlA2zzjpPAVj9qm7TAPvgp191pPXhWpu4yGYkOA/edit?usp=sharing"
-           target="_blank" rel="noopener noreferrer">here</a>.
-      </p>
-    </div>
-  </div>
+    <script>
+        const app = {
+            allData: {},
+            currentVocab: [],
+            units: [
+                "Unidad Preliminar", "Unidad 1", "Unidad 2", 
+                "Unidad 3", "Unidad 4", "Unidad 5", "Unidad 6"
+            ],
+            defaultUnits: ["Unidad 4", "Unidad 5", "Unidad 6"],
+            
+            // Mode state
+            mode: 'dashboard', // dashboard, flashcards, quiz
+            currentIndex: 0,
+            
+            async init() {
+                this.bindEvents();
+                this.renderSettings();
+                await this.fetchData();
+            },
 
-  <script>
-    // Complete vocabulary list (no duplicates, fixed C.R. entries)
-    const vocab = [{eng: "strawberry", esp: "la fresa"}
-​
-{eng: "apple", esp: "la manzana"}
-​
-{eng: "melon", esp: "el melón"}
-​
-{eng: "orange", esp: "la naranja"}
-​
-{eng: "papaya", esp: "la papaya"}
-​
-{eng: "cucumber", esp: "el pepino"}
-​
-{eng: "pineapple", esp: "la piña"}
-​
-{eng: "banana; plantain", esp: "el plátano"}
-​
-{eng: "watermelon", esp: "la sandía"}
-​
-{eng: "grape", esp: "la uva"}
-​
+            bindEvents() {
+                document.getElementById('openSettingsBtn').addEventListener('click', () => this.openSettings());
+                
+                // Allow Enter key for quiz
+                document.getElementById('quizInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const btnText = document.getElementById('quizSubmitBtn').innerText;
+                        if(btnText === 'Submit') this.checkQuiz();
+                        else this.nextQuizItem();
+                    }
+                });
+            },
 
-{eng: "lettuce", esp: "la lechuga"}
-​
-{eng: "spinach", esp: "las espinacas"}
-​
+            async fetchData() {
+                try {
+                    const res = await fetch('./spanish_1_words.json');
+                    if(!res.ok) throw new Error("Could not load JSON");
+                    this.allData = await res.json();
+                    this.updateVocabList();
+                } catch (error) {
+                    document.getElementById('vocabCountDisplay').innerText = "Error loading data. Ensure you are running this file via a local web server (e.g., Live Server) so fetch() works properly.";
+                    console.error(error);
+                }
+            },
 
-{eng: "onion", esp: "la cebolla"}
-​
-{eng: "poblano chili", esp: "el chile poblano"}
-​
-{eng: "salad", esp: "la ensalada"}
-​
-{eng: "potato", esp: "la papa"}
-​
+            renderSettings() {
+                const container = document.getElementById('unitCheckboxes');
+                container.innerHTML = '';
+                this.units.forEach(unit => {
+                    const label = document.createElement('label');
+                    label.className = 'checkbox-label';
+                    const isChecked = this.defaultUnits.includes(unit) ? 'checked' : '';
+                    label.innerHTML = `<input type="checkbox" value="${unit}" class="unit-cb" ${isChecked}> ${unit}`;
+                    container.appendChild(label);
+                });
+            },
 
-{eng: "water", esp: "el agua"}
-​
-{eng: "fruit-flavored water", esp: "el agua fresca"}
-​
-{eng: "smoothie; shake", esp: "el batido"}
-​
-{eng: "juice", esp: "el jugo"}
-​
+            openSettings() {
+                document.getElementById('settingsModal').classList.add('active');
+            },
 
-{eng: "orange (color)", esp: "anaranjado/a"}
-​
-{eng: "yellow", esp: "amarillo/a"}
-​
-{eng: "blue", esp: "azul"}
-​
-{eng: "white", esp: "blanco/a"}
-​
-{eng: "purple", esp: "morado/a"}
-​
-{eng: "black", esp: "negro/a"}
-​
-{eng: "red", esp: "rojo"}
-​
-{eng: "pink", esp: "rosado/a"}
-​
-{eng: "green", esp: "verde"}
-​
+            closeSettings() {
+                document.getElementById('settingsModal').classList.remove('active');
+                this.updateVocabList();
+            },
 
-{eng: "to drink", esp: "beber"}
-​
-{eng: "to buy", esp: "comprar"}
-​
-{eng: "to ask for; to order", esp: "pedir (e → i)"}
-​
-{eng: "to think", esp: "pensar (e → ie)"}
-​
-{eng: "to prefer", esp: "preferir (e → ie)"}
-​
-{eng: "to try", esp: "probar (o → ue)"}
-​
-{eng: "to want", esp: "querer (e → ie)"}
-​
-{eng: "to recommend", esp: "recomendar (e → ie)"}
-​
-{eng: "to sell", esp: "vender"}
-​
+            applyPreset(type) {
+                const checkboxes = document.querySelectorAll('.unit-cb');
+                checkboxes.forEach(cb => {
+                    const unit = cb.value;
+                    if (type === 'sem1') {
+                        cb.checked = ["Unidad Preliminar", "Unidad 1", "Unidad 2", "Unidad 3"].includes(unit);
+                    } else if (type === 'sem2') {
+                        cb.checked = ["Unidad 4", "Unidad 5", "Unidad 6"].includes(unit);
+                    }
+                });
+            },
 
-{eng: "What can I get for you?", esp: "¿Qué va a llevar?"}
-​
-{eng: "I’d like . . .", esp: "Quiero . . ."}
-​
-{eng: "Please give me . . .", esp: "Póngame por favor . . ."}
-​
-{eng: "a kilo (of)", esp: "un kilo (de)"}
-​
-{eng: "half a kilo (of)", esp: "medio kilo (de)"}
-​
-{eng: "fourth of a kilo (of)", esp: "un cuarto de kilo (de)"}
-​
-{eng: "100 grams", esp: "cien gramos"}
-​
-{eng: "a dozen (of)", esp: "una docena (de)"}
-​
-{eng: "How much is it?", esp: "¿Cuánto es?"}
-​
-{eng: "It’ll be 30 pesos.", esp: "Son 30 pesos."}
-​
-{eng: "Here you go/Here it is.", esp: "Aquí lo tiene."}
-​
+            updateVocabList() {
+                if(Object.keys(this.allData).length === 0) return;
+                
+                this.currentVocab = [];
+                const checkboxes = document.querySelectorAll('.unit-cb:checked');
+                const selected = Array.from(checkboxes).map(cb => cb.value);
 
-{eng: "lunch", esp: "el almuerzo"}
-​
-{eng: "dinner", esp: "la cena"}
-​
-{eng: "midday meal", esp: "la comida"}
-​
-{eng: "breakfast", esp: "el desayuno"}
-​
+                selected.forEach(unit => {
+                    if (this.allData[unit]) {
+                        this.currentVocab = this.currentVocab.concat(this.allData[unit]);
+                    }
+                });
 
-{eng: "avocado", esp: "el aguacate"}
-​
-{eng: "rice", esp: "el arroz"}
-​
-{eng: "steak", esp: "el bistec"}
-​
-{eng: "meat", esp: "la carne"}
-​
-{eng: "beans", esp: "los frijoles"}
-​
-{eng: "hamburger", esp: "la hamburguesa"}
-​
-{eng: "vanilla ice cream", esp: "el helado de vainilla"}
-​
-{eng: "fried/ranchero-style eggs", esp: "los huevos fritos/rancheros"}
-​
-{eng: "ham", esp: "el jamón"}
-​
-{eng: "sweet bread", esp: "el pan dulce"}
-​
-{eng: "cake; pastry", esp: "el pastel"}
-​
-{eng: "toast", esp: "la tostada"}
-​
-{eng: "French fries", esp: "las papas fritas"}
-​
-{eng: "chicken with mole sauce", esp: "el pollo con mole"}
-​
-{eng: "cheese sandwich", esp: "el sándwich de queso"}
-​
-{eng: "tortilla soup", esp: "la sopa azteca"}
-​
-{eng: "tomato soup", esp: "la sopa de tomate"}
-​
-{eng: "corn tortilla", esp: "la tortilla de maíz"}
-​
-{eng: "apple pie", esp: "el pay de manzana"}
-​
-{eng: "dessert", esp: "el postre"}
-​
-{eng: "yogurt with fruit", esp: "el yogur con frutas"}
-​
+                const countText = selected.length === 0 
+                    ? "Please select at least one unit in Settings ⚙️."
+                    : `Active terms: ${this.currentVocab.length} (from ${selected.join(', ')})`;
+                
+                document.getElementById('vocabCountDisplay').innerText = countText;
+            },
 
-{eng: "coffee with milk", esp: "el café con leche"}
-​
-{eng: "soft drink", esp: "el refresco"}
-​
-{eng: "iced tea", esp: "el té helado"}
-​
+            showDashboard() {
+                this.switchView('dashboardView');
+            },
 
-{eng: "Yum! Delicious!", esp: "¡Qué rico!"}
-​
-{eng: "How disgusting! Gross!", esp: "¡Qué asco!"}
-​
+            switchView(viewId) {
+                document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+                document.getElementById(viewId).classList.add('active');
+            },
 
-{eng: "stand", esp: "el puesto"}
-​
-{eng: "quesadilla", esp: "la quesadilla"}
-​
-{eng: "salsa; sauce", esp: "la salsa"}
-​
-{eng: "beef tacos", esp: "los tacos de carne asada"}
-​
-{eng: "pork tacos", esp: "los tacos de carnitas"}
-​
-{eng: "fish tacos", esp: "los tacos de pescado"}
-​
-{eng: "flour tortilla", esp: "la tortilla de harina"}
-​
-{eng: "taco stand", esp: "la taquería"}
-​
+            shuffle(array) {
+                let currentIndex = array.length, randomIndex;
+                while (currentIndex != 0) {
+                    randomIndex = Math.floor(Math.random() * currentIndex);
+                    currentIndex--;
+                    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+                }
+                return array;
+            },
 
-{eng: "How’s the food?", esp: "¿Cómo está la comida?"}
-​
-{eng: "good; tasty", esp: "bueno/a"}
-​
-{eng: "hot", esp: "caliente"}
-​
-{eng: "delicious", esp: "delicioso/a"}
-​
-{eng: "sweet", esp: "dulce"}
-​
-{eng: "this", esp: "este/esta"}
-​
-{eng: "these", esp: "estos/estas"}
-​
-{eng: "fresh", esp: "fresco/a"}
-​
-{eng: "cold", esp: "frío/a"}
-​
-{eng: "spicy", esp: "picante"}
-​
-{eng: "delicious", esp: "rico/a"}
-​
-{eng: "tasty; delicious", esp: "sabroso/a"}
-​
-{eng: "salty", esp: "salado/a"}
-​
+            startMode(mode) {
+                if (this.currentVocab.length === 0) {
+                    alert("No vocabulary loaded. Please select units in settings.");
+                    return;
+                }
+                
+                this.shuffle(this.currentVocab);
+                this.currentIndex = 0;
 
-{eng: "to feel like + -ing", esp: "tener ganas de + inf."}
-​
-{eng: "to be hungry", esp: "tener hambre"}
-​
-{eng: "to be thirsty", esp: "tener sed"}
-​
+                if (mode === 'flashcards') {
+                    this.switchView('flashcardsView');
+                    this.renderFlashcard();
+                } else if (mode === 'quiz') {
+                    this.switchView('quizView');
+                    this.renderQuizItem();
+                }
+            },
 
-{eng: "sugar", esp: "el azúcar"}
-​
-{eng: "to cook", esp: "cocinar"}
-​
-{eng: "egg custard", esp: "el flan"}
-​
-{eng: "to pay", esp: "pagar"}
-​
-{eng: "in cash", esp: "en efectivo"}
-​
-{eng: "by credit card", esp: "con tarjeta de crédito"}
-​
-{eng: "to carry; take out", esp: "llevar"}
-​
-{eng: "to prepare", esp: "preparar"}
-​
-{eng: "salt", esp: "la sal"}
-​
-{eng: "to serve", esp: "servir (e → i)"}
-​
+            // --- Flashcard Logic ---
+            renderFlashcard() {
+                const card = document.getElementById('flashcard');
+                card.classList.remove('is-flipped');
+                
+                const item = this.currentVocab[this.currentIndex];
+                // Wait slightly for flip animation to reset before changing text
+                setTimeout(() => {
+                    document.getElementById('fcFront').innerText = item.spanish;
+                    document.getElementById('fcBack').innerText = item.english;
+                    document.getElementById('fcProgress').innerText = `${this.currentIndex + 1} / ${this.currentVocab.length}`;
+                }, 150);
+            },
 
+            flipCard() {
+                document.getElementById('flashcard').classList.toggle('is-flipped');
+            },
 
-    ];
-    let idx = 0, order = [], current = {};
-    let right = 0, wrong = 0;
-    const history = [];
-    let allowInput = true;
+            nextCard() {
+                if (this.currentIndex < this.currentVocab.length - 1) {
+                    this.currentIndex++;
+                    this.renderFlashcard();
+                } else {
+                    alert("You've reached the end of the selected vocabulary!");
+                }
+            },
 
-    function normalizeAnswer(userInput, expected) {
-      // Ultra-flexible normalization that accepts ANY variation
-      const normalizeText = (text) => {
-        return text
-          .trim()
-          .toLowerCase()
-          // Normalize ALL dot variations to single dots with spaces
-          .replace(/\.+/g, '.')           // multiple dots → single dot
-          .replace(/\s*\.\s*/g, '. ')     // dot + any spaces → ". "
-          .replace(/^\.+|\.+$/g, '')      // remove leading/trailing dots
-          // Normalize ALL separator variations: / , | - → /
-          .replace(/[|,|-]/g, '/')        // , | - → /
-          .replace(/\s*\/\s*/g, '/')      // / with any spaces → /
-          // Normalize multiple slashes
-          .replace(/\/+/g, '/')
-          // Normalize multiple spaces
-          .replace(/\s+/g, ' ')
-          .trim();
-      };
+            prevCard() {
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                    this.renderFlashcard();
+                }
+            },
 
-      return {
-        user: normalizeText(userInput),
-        expected: normalizeText(expected)
-      };
-    }
+            // --- Quiz Logic ---
+            renderQuizItem() {
+                const item = this.currentVocab[this.currentIndex];
+                document.getElementById('quizWord').innerText = item.english;
+                
+                const input = document.getElementById('quizInput');
+                input.value = '';
+                input.disabled = false;
+                input.focus();
 
-    function initOrder() {
-      order = [...Array(vocab.length).keys()].sort(() => Math.random() - 0.5);
-      idx = 0;
-    }
+                const fb = document.getElementById('quizFeedback');
+                fb.innerText = '';
+                fb.className = 'feedback';
 
-    function showQuestion() {
-      allowInput = true;
-      idx++;
-      current = vocab[order[(idx - 1) % vocab.length]];
-      const answerEl = document.getElementById('answer');
+                const btn = document.getElementById('quizSubmitBtn');
+                btn.innerText = 'Submit';
+                btn.onclick = () => this.checkQuiz();
+                
+                document.getElementById('quizProgress').innerText = `${this.currentIndex + 1} / ${this.currentVocab.length}`;
+            },
 
-      document.getElementById('question').textContent = "Spanish for: " + current.eng;
-      answerEl.value = '';
-      document.getElementById('feedback').textContent = '';
-      answerEl.disabled = false;
+            checkQuiz() {
+                const inputEl = document.getElementById('quizInput');
+                const userVal = inputEl.value.trim();
+                const correctVal = this.currentVocab[this.currentIndex].spanish;
+                
+                if (userVal === '') return;
 
-      answerEl.focus();
-      answerEl.select();
-    }
+                const fb = document.getElementById('quizFeedback');
+                inputEl.disabled = true;
 
-    function updateStatsAndHistory() {
-      document.getElementById('right').textContent = right;
-      document.getElementById('wrong').textContent = wrong;
-      let html = '';
-      for (let i = history.length - 1; i >= 0; i--) {
-        const h = history[i];
-        html += `<li class="history-item">
-                    <span class="qeng">${h.eng}</span>
-                    <span class="userans ${h.correct ? 'correct' : 'incorrect'}">${h.your}</span>
-                    <span class="corrans">${h.correct ? '' : '→ ' + h.exp}</span>
-                  </li>`;
-      }
-      document.getElementById('history-list').innerHTML = html;
-    }
+                // Exact match (case sensitive, accent sensitive)
+                if (userVal === correctVal) {
+                    fb.innerText = "¡Correcto!";
+                    fb.className = "feedback correct";
+                } else {
+                    fb.innerText = `Incorrect. The exact answer is: ${correctVal}`;
+                    fb.className = "feedback incorrect";
+                }
 
-    function checkAnswer() {
-      if (!allowInput) return;
-      const answerEl = document.getElementById('answer');
-      const userAns = answerEl.value;
-      
-      const normalized = normalizeAnswer(userAns, current.esp);
+                const btn = document.getElementById('quizSubmitBtn');
+                btn.innerText = 'Next';
+                btn.onclick = () => this.nextQuizItem();
+            },
 
-      if (normalized.user === normalized.expected) {
-        document.getElementById('feedback').textContent = "Correct!";
-        document.getElementById('feedback').style.color = "#118b0a";
-        right++;
-        history.push({eng: current.eng, your: userAns, exp: current.esp, correct: true});
-      } else {
-        document.getElementById('feedback').textContent = "Nope! It's: " + current.esp;
-        document.getElementById('feedback').style.color = "#b8161a";
-        wrong++;
-        history.push({eng: current.eng, your: userAns, exp: current.esp, correct: false});
-      }
+            nextQuizItem() {
+                if (this.currentIndex < this.currentVocab.length - 1) {
+                    this.currentIndex++;
+                    this.renderQuizItem();
+                } else {
+                    alert("Quiz Complete! Great job.");
+                    this.showDashboard();
+                }
+            }
+        };
 
-      updateStatsAndHistory();
-      allowInput = false;
-      answerEl.disabled = true;
-      setTimeout(showQuestion, 1500);
-    }
-
-    document.getElementById('answer').addEventListener('keyup', function (e) {
-      if (e.key === "Enter") checkAnswer();
-    });
-
-    // Modal logic
-    const vocabModal = document.getElementById('vocab-modal');
-    const vocabModalClose = document.querySelector('.vocab-modal-close');
-
-    function closeVocabModal() {
-      vocabModal.classList.add('hidden');
-      const answerEl = document.getElementById('answer');
-      answerEl.focus();
-      answerEl.select();
-    }
-
-    vocabModalClose.addEventListener('click', closeVocabModal);
-    vocabModal.addEventListener('click', function (e) {
-      if (e.target === vocabModal) closeVocabModal();
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && !vocabModal.classList.contains('hidden')) {
-        closeVocabModal();
-      }
-    });
-
-    // Initialize
-    initOrder();
-    showQuestion();
-    updateStatsAndHistory();
-  </script>
+        // Initialize app on load
+        window.onload = () => app.init();
+    </script>
 </body>
 </html>

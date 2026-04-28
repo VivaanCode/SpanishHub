@@ -230,7 +230,7 @@
             line-height: 1.4;
         }
 
-        /* Top Bar for Quiz/Flashcards */
+        /* Top Bar for Quizzes/Flashcards */
         .session-header {
             display: flex;
             justify-content: space-between;
@@ -380,25 +380,85 @@
             margin-bottom: 2rem;
         }
 
-        .custom-input {
-            width: 100%;
-            padding: 1.25rem 1rem;
-            font-size: 1.125rem;
-            color: var(--text-main);
+        /* Input styling with hint separation */
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: var(--input-bg);
             border: 2px solid var(--border);
             border-radius: var(--radius-md);
-            outline: none;
-            transition: var(--transition);
-            text-align: center;
-            background: var(--input-bg);
-            font-weight: 500;
             margin-bottom: 1rem;
+            transition: var(--transition);
+            overflow: hidden;
         }
 
-        .custom-input:focus {
+        .input-wrapper:focus-within {
             border-color: var(--primary);
             background: var(--surface);
             box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            padding: 1.25rem 1rem;
+            font-size: 1.125rem;
+            color: var(--text-main);
+            border: none;
+            outline: none;
+            background: transparent;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .input-hint {
+            padding-right: 1.25rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        /* MCQ Options Styling */
+        .mcq-options { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 1rem; 
+            margin-bottom: 1.5rem; 
+        }
+
+        .mcq-btn { 
+            padding: 1rem; 
+            border: 2px solid var(--border); 
+            border-radius: var(--radius-md); 
+            background: var(--surface); 
+            color: var(--text-main); 
+            font-size: 1rem; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: var(--transition); 
+        }
+        
+        .mcq-btn:hover:not(:disabled) { 
+            border-color: var(--primary); 
+            background: var(--primary-light); 
+            color: var(--primary); 
+        }
+        
+        .mcq-btn.correct { 
+            background: var(--success-light); 
+            border-color: var(--success); 
+            color: var(--success); 
+        }
+        
+        .mcq-btn.incorrect { 
+            background: var(--danger-light); 
+            border-color: var(--danger); 
+            color: var(--danger); 
+        }
+        
+        .mcq-btn:disabled { 
+            cursor: not-allowed; 
+            opacity: 0.9; 
         }
 
         .feedback-banner {
@@ -572,6 +632,7 @@
             .session-header { padding: 1rem; flex-wrap: wrap; gap: 1rem; }
             .flashcard-wrapper { height: 280px; }
             .preset-group { flex-direction: column; }
+            .mcq-options { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -600,15 +661,23 @@
                     <div class="card-icon"><i class="ph-fill ph-cards"></i></div>
                     <div class="card-content">
                         <h2>Flashcards</h2>
-                        <p>Master your vocabulary at your own pace with interactive study cards.</p>
+                        <p>Master learning at your own pace with interactive study cards.</p>
                     </div>
                 </div>
                 
                 <div class="action-card" onclick="app.startMode('quiz')">
                     <div class="card-icon"><i class="ph-fill ph-target"></i></div>
                     <div class="card-content">
-                        <h2>Strict Quiz</h2>
-                        <p>Test your precision. Practice perfect spelling and correct accent marks.</p>
+                        <h2>Free Response Quiz</h2>
+                        <p>Get tested in an exam-style quiz to review.</p>
+                    </div>
+                </div>
+
+                <div class="action-card" onclick="app.startMode('mcq')">
+                    <div class="card-icon"><i class="ph-fill ph-list-checks"></i></div>
+                    <div class="card-content">
+                        <h2>Multiple Choice Quiz</h2>
+                        <p>Practice identifying the right translation from a set of options.</p>
                     </div>
                 </div>
 
@@ -616,7 +685,7 @@
                     <div class="card-icon"><i class="ph-fill ph-table"></i></div>
                     <div class="card-content">
                         <h2>Master Vocab Sheet</h2>
-                        <p>View the complete, official vocabulary spreadsheet for the course.</p>
+                        <p>View the complete vocabulary spreadsheet for the course.</p>
                     </div>
                 </a>
 
@@ -696,7 +765,10 @@
                     <div class="prompt-label">Translate to Spanish</div>
                     <div class="prompt-word" id="quizWord">English Word</div>
                     
-                    <input type="text" id="quizInput" class="custom-input" placeholder="Type exact translation here..." autocomplete="off">
+                    <div class="input-wrapper">
+                        <input type="text" id="quizInput" placeholder="Type exact translation here..." autocomplete="off">
+                        <span id="quizInputHint" class="input-hint" style="display:none;"></span>
+                    </div>
                     
                     <div id="quizFeedback" class="feedback-banner"></div>
                     
@@ -704,6 +776,43 @@
                 </div>
             </div>
         </section>
+
+        <section id="mcqView" class="view-section">
+            <div class="session-header">
+                <button class="back-btn" onclick="app.showDashboard()">
+                    <i class="ph-bold ph-arrow-left"></i> <span>Exit Quiz</span>
+                </button>
+                <div class="session-stats">
+                    <div class="stat-badge">
+                        <span class="stat-label">Time</span>
+                        <span class="stat-value" id="mcqTimer">00:00</span>
+                    </div>
+                    <div class="stat-badge">
+                        <span class="stat-label">Score</span>
+                        <span class="stat-value" id="mcqScore">0 / 0</span>
+                    </div>
+                    <div class="stat-badge">
+                        <span class="stat-label">Item</span>
+                        <span class="stat-value" id="mcqProgress">0 / 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-prompt-card">
+                    <div class="prompt-label">Select the correct translation</div>
+                    <div class="prompt-word" id="mcqWord">English Word</div>
+                    
+                    <div class="mcq-options" id="mcqOptions">
+                        </div>
+                    
+                    <div id="mcqFeedback" class="feedback-banner"></div>
+                    
+                    <button id="mcqNextBtn" class="btn btn-primary btn-block" style="display:none;" onclick="app.nextMCQItem()">Next Question</button>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <div class="modal-overlay" id="settingsModal">
@@ -765,7 +874,7 @@
             bindEvents() {
                 document.getElementById('openSettingsBtn').addEventListener('click', () => this.openSettings());
                 
-                // Keyboard support for quiz
+                // Keyboard support for Free Response quiz
                 document.getElementById('quizInput').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         const btnText = document.getElementById('quizSubmitBtn').innerText;
@@ -895,6 +1004,15 @@
                 return array;
             },
 
+            // Helper to separate grammatical hints like (e → ie) or (yo sé) from the base word
+            parseWord(text) {
+                const match = text.match(/^(.*?)\s*(\([^)]+\))\s*$/);
+                if (match) {
+                    return { base: match[1].trim(), hint: match[2].trim() };
+                }
+                return { base: text.trim(), hint: '' };
+            },
+
             startMode(mode) {
                 if (this.currentVocab.length === 0) {
                     alert("Please select at least one unit in your Preferences.");
@@ -902,6 +1020,13 @@
                     return;
                 }
                 
+                // For MCQ, make sure we have at least 4 words
+                if (mode === 'mcq' && this.currentVocab.length < 4) {
+                    alert("You need at least 4 active words selected to play Multiple Choice.");
+                    this.openSettings();
+                    return;
+                }
+
                 this.shuffle(this.currentVocab);
                 this.currentIndex = 0;
 
@@ -910,7 +1035,10 @@
                     this.renderFlashcard();
                 } else if (mode === 'quiz') {
                     this.switchView('quizView');
-                    this.startQuizSession();
+                    this.startQuizSession('quiz');
+                } else if (mode === 'mcq') {
+                    this.switchView('mcqView');
+                    this.startQuizSession('mcq');
                 }
             },
 
@@ -949,8 +1077,8 @@
                 }
             },
 
-            // --- Quiz Logic ---
-            startQuizSession() {
+            // --- Common Quiz Logic (Timers & Scoring) ---
+            startQuizSession(type) {
                 this.quizCorrect = 0;
                 this.secondsElapsed = 0;
                 this.updateScoreDisplay();
@@ -961,7 +1089,8 @@
                     this.updateTimerDisplay();
                 }, 1000);
 
-                this.renderQuizItem();
+                if (type === 'quiz') this.renderQuizItem();
+                if (type === 'mcq') this.renderMCQItem();
             },
 
             stopTimer() {
@@ -974,17 +1103,31 @@
             updateTimerDisplay() {
                 const m = Math.floor(this.secondsElapsed / 60).toString().padStart(2, '0');
                 const s = (this.secondsElapsed % 60).toString().padStart(2, '0');
-                document.getElementById('quizTimer').innerText = `${m}:${s}`;
+                if(document.getElementById('quizTimer')) document.getElementById('quizTimer').innerText = `${m}:${s}`;
+                if(document.getElementById('mcqTimer')) document.getElementById('mcqTimer').innerText = `${m}:${s}`;
             },
 
             updateScoreDisplay() {
-                document.getElementById('quizScore').innerText = `${this.quizCorrect} / ${this.currentVocab.length}`;
+                if(document.getElementById('quizScore')) document.getElementById('quizScore').innerText = `${this.quizCorrect} / ${this.currentVocab.length}`;
+                if(document.getElementById('mcqScore')) document.getElementById('mcqScore').innerText = `${this.quizCorrect} / ${this.currentVocab.length}`;
             },
 
+            // --- Free Response Quiz Logic ---
             renderQuizItem() {
                 const item = this.currentVocab[this.currentIndex];
                 document.getElementById('quizWord').innerText = item.english;
                 
+                const parsedSpan = this.parseWord(item.spanish);
+                const hintEl = document.getElementById('quizInputHint');
+                
+                if (parsedSpan.hint) {
+                    hintEl.innerText = parsedSpan.hint;
+                    hintEl.style.display = 'block';
+                } else {
+                    hintEl.style.display = 'none';
+                    hintEl.innerText = '';
+                }
+
                 const input = document.getElementById('quizInput');
                 input.value = '';
                 input.disabled = false;
@@ -1004,19 +1147,20 @@
             checkQuiz() {
                 const inputEl = document.getElementById('quizInput');
                 const userVal = inputEl.value.trim();
-                const correctVal = this.currentVocab[this.currentIndex].spanish;
+                const correctValRaw = this.currentVocab[this.currentIndex].spanish;
+                const parsedCorrect = this.parseWord(correctValRaw);
                 
                 if (userVal === '') return;
 
                 inputEl.disabled = true;
                 const fb = document.getElementById('quizFeedback');
 
-                if (userVal === correctVal) {
+                if (userVal === parsedCorrect.base) {
                     this.quizCorrect++;
                     fb.innerHTML = "<i class='ph-bold ph-check-circle'></i> ¡Excelente! That's perfectly correct.";
                     fb.className = "feedback-banner correct";
                 } else {
-                    fb.innerHTML = `<i class='ph-bold ph-x-circle'></i> Not quite. The exact answer is:<br><strong style="margin-top:0.5rem; display:block;">${correctVal}</strong>`;
+                    fb.innerHTML = `<i class='ph-bold ph-x-circle'></i> Not quite. The exact answer is:<br><strong style="margin-top:0.5rem; display:block;">${parsedCorrect.base}</strong>`;
                     fb.className = "feedback-banner incorrect";
                 }
 
@@ -1032,15 +1176,92 @@
                     this.currentIndex++;
                     this.renderQuizItem();
                 } else {
-                    this.stopTimer();
-                    const m = Math.floor(this.secondsElapsed / 60).toString().padStart(2, '0');
-                    const s = (this.secondsElapsed % 60).toString().padStart(2, '0');
-                    
-                    setTimeout(() => {
-                        alert(`Quiz Complete!\n\nFinal Score: ${this.quizCorrect}/${this.currentVocab.length}\nTime: ${m}:${s}`);
-                        this.showDashboard();
-                    }, 100);
+                    this.finishQuizSession();
                 }
+            },
+
+            // --- Multiple Choice Quiz Logic ---
+            renderMCQItem() {
+                const item = this.currentVocab[this.currentIndex];
+                document.getElementById('mcqWord').innerText = item.english;
+                
+                // Get 3 random wrong answers
+                let distractors = [];
+                let attempts = 0;
+                while(distractors.length < 3 && attempts < 100) {
+                    let randItem = this.currentVocab[Math.floor(Math.random() * this.currentVocab.length)];
+                    if(randItem.spanish !== item.spanish && !distractors.includes(randItem.spanish)) {
+                        distractors.push(randItem.spanish);
+                    }
+                    attempts++;
+                }
+                
+                let options = [item.spanish, ...distractors];
+                this.shuffle(options);
+                
+                const optionsContainer = document.getElementById('mcqOptions');
+                optionsContainer.innerHTML = '';
+                
+                options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'mcq-btn';
+                    btn.innerText = opt;
+                    btn.onclick = () => this.checkMCQ(opt, btn, item.spanish);
+                    optionsContainer.appendChild(btn);
+                });
+                
+                document.getElementById('mcqFeedback').className = 'feedback-banner';
+                document.getElementById('mcqFeedback').innerText = '';
+                document.getElementById('mcqNextBtn').style.display = 'none';
+                
+                document.getElementById('mcqProgress').innerText = `${this.currentIndex + 1} / ${this.currentVocab.length}`;
+            },
+
+            checkMCQ(selectedOpt, btnElement, correctOpt) {
+                // Lock buttons after selection
+                const allBtns = document.querySelectorAll('.mcq-btn');
+                allBtns.forEach(b => b.disabled = true);
+                
+                const fb = document.getElementById('mcqFeedback');
+                
+                if (selectedOpt === correctOpt) {
+                    this.quizCorrect++;
+                    btnElement.classList.add('correct');
+                    fb.innerHTML = "<i class='ph-bold ph-check-circle'></i> ¡Correcto!";
+                    fb.className = "feedback-banner correct";
+                } else {
+                    btnElement.classList.add('incorrect');
+                    // Highlight the correct one
+                    allBtns.forEach(b => {
+                        if(b.innerText === correctOpt) b.classList.add('correct');
+                    });
+                    fb.innerHTML = `<i class='ph-bold ph-x-circle'></i> Incorrect. The translation is:<br><strong style="margin-top:0.5rem; display:block;">${correctOpt}</strong>`;
+                    fb.className = "feedback-banner incorrect";
+                }
+                
+                this.updateScoreDisplay();
+                document.getElementById('mcqNextBtn').style.display = 'block';
+            },
+
+            nextMCQItem() {
+                if (this.currentIndex < this.currentVocab.length - 1) {
+                    this.currentIndex++;
+                    this.renderMCQItem();
+                } else {
+                    this.finishQuizSession();
+                }
+            },
+
+            // Finish either quiz
+            finishQuizSession() {
+                this.stopTimer();
+                const m = Math.floor(this.secondsElapsed / 60).toString().padStart(2, '0');
+                const s = (this.secondsElapsed % 60).toString().padStart(2, '0');
+                
+                setTimeout(() => {
+                    alert(`Quiz Complete!\n\nFinal Score: ${this.quizCorrect}/${this.currentVocab.length}\nTime: ${m}:${s}`);
+                    this.showDashboard();
+                }, 100);
             }
         };
 

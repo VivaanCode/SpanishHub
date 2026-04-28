@@ -4,244 +4,258 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spanish 1 Practice Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4F46E5;
-            --primary-hover: #4338CA;
-            --secondary: #10B981;
-            --danger: #EF4444;
-            --background: #F3F4F6;
-            --surface: #FFFFFF;
-            --text-main: #1F2937;
-            --text-muted: #6B7280;
-            --border: #E5E7EB;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --transition: all 0.3s ease;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-light: #e0e7ff;
+            --success: #059669;
+            --success-light: #d1fae5;
+            --danger: #dc2626;
+            --danger-light: #fee2e2;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --bg-color: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
-            background-color: var(--background);
+            background-color: var(--bg-color);
             color: var(--text-main);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* Header */
+        /* Atmospheric Background Blurs */
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .blob-1 { top: -10%; left: -5%; width: 400px; height: 400px; background: #e0e7ff; }
+        .blob-2 { bottom: -10%; right: -5%; width: 500px; height: 500px; background: #fce7f3; }
+
+        /* App Layout */
         header {
-            background-color: var(--surface);
-            padding: 1.25rem 2rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 1.5rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .settings-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-muted);
-            transition: var(--transition);
-        }
-
-        .settings-btn:hover {
-            color: var(--primary);
-            transform: rotate(45deg);
-        }
-
-        /* Main Container */
-        main {
-            flex: 1;
-            padding: 2rem;
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
             width: 100%;
         }
 
-        /* Dashboard Views */
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .settings-btn {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 44px; height: 44px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            font-size: 1.25rem;
+        }
+
+        .settings-btn:hover {
+            box-shadow: var(--shadow-md);
+            transform: rotate(30deg);
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem 5%;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* View Switching */
         .view-section {
             display: none;
-            animation: fadeIn 0.4s ease;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         .view-section.active {
             display: block;
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .vocab-status {
+            display: inline-block;
+            background: #ffffff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
         }
 
-        /* Dashboard Grid */
+        /* Dashboard Cards */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 2rem;
         }
 
-        .card-btn {
-            background-color: var(--surface);
-            border: 2px solid transparent;
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
+        .action-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
             text-decoration: none;
-            color: var(--text-main);
+            color: inherit;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
+            align-items: flex-start;
+            gap: 1.25rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
-        .card-btn:hover:not(.disabled) {
-            transform: translateY(-5px);
-            border-color: var(--primary);
+        .action-card:hover:not(.disabled) {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: #ffffff;
+            background: #ffffff;
         }
 
-        .card-btn.disabled {
+        .action-card.disabled {
             opacity: 0.6;
             cursor: not-allowed;
+            filter: grayscale(1);
         }
 
-        .card-btn h2 {
-            font-size: 1.25rem;
+        .card-icon {
+            font-size: 2rem;
+            background: var(--primary-light);
+            width: 60px; height: 60px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 14px;
+            flex-shrink: 0;
         }
 
-        .card-btn p {
-            color: var(--text-muted);
+        .card-content h2 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+            color: var(--text-main);
+        }
+
+        .card-content p {
             font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.4;
         }
 
-        .icon {
-            font-size: 2.5rem;
-        }
-
-        /* Settings Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
+        /* Top Bar for Quiz/Flashcards */
+        .session-header {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: var(--transition);
-            backdrop-filter: blur(4px);
+            margin-bottom: 2rem;
+            background: #ffffff;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
         }
 
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: var(--shadow);
-            transform: scale(0.95);
-            transition: var(--transition);
-        }
-
-        .modal-overlay.active .modal {
-            transform: scale(1);
-        }
-
-        .modal h2 {
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
-        }
-
-        .preset-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            border: none;
-            background-color: var(--primary);
-            color: white;
-            font-weight: 600;
+        .back-btn {
+            background: none; border: none;
+            font-size: 0.95rem; font-weight: 600;
+            color: var(--text-muted);
             cursor: pointer;
+            display: flex; align-items: center; gap: 0.5rem;
             transition: var(--transition);
         }
-
-        .btn:hover { background-color: var(--primary-hover); }
-        .btn-outline { background-color: transparent; border: 1px solid var(--primary); color: var(--primary); }
-        .btn-outline:hover { background-color: var(--primary); color: white; }
         
-        .unit-list {
+        .back-btn:hover { color: var(--text-main); }
+
+        .session-stats {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .stat-badge {
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
+            align-items: flex-end;
         }
 
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .stat-value {
             font-size: 1rem;
-            cursor: pointer;
-        }
-
-        .checkbox-label input[type="checkbox"] {
-            width: 1.2rem;
-            height: 1.2rem;
-            accent-color: var(--primary);
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
+            font-weight: 700;
+            color: var(--text-main);
+            font-variant-numeric: tabular-nums;
         }
 
         /* Flashcards */
-        .flashcard-container {
+        .flashcard-wrapper {
             perspective: 1000px;
+            height: 340px;
             width: 100%;
-            height: 300px;
-            margin: 2rem 0;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
         }
 
         .flashcard {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             position: relative;
-            transition: transform 0.6s;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
             transform-style: preserve-3d;
             cursor: pointer;
-            box-shadow: var(--shadow);
-            border-radius: 12px;
         }
 
         .flashcard.is-flipped {
@@ -250,207 +264,385 @@
 
         .card-face {
             position: absolute;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             backface-visibility: hidden;
+            background: #ffffff;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: var(--surface);
-            border-radius: 12px;
             padding: 2rem;
             text-align: center;
-            font-size: 1.75rem;
-            font-weight: 600;
+        }
+
+        .card-front {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
         }
 
         .card-back {
             transform: rotateX(180deg);
-            background: #FAFAFA;
+            font-size: 1.75rem;
+            font-weight: 600;
             color: var(--primary);
+            background: var(--primary-light);
+            border-color: transparent;
         }
-        
-        .card-hint {
-            font-size: 0.9rem;
+
+        .flip-hint {
+            position: absolute;
+            bottom: 1.5rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
-            margin-top: 1rem;
-            font-weight: 400;
+            font-weight: 500;
         }
 
-        .controls {
+        .fc-controls {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1.5rem;
+            justify-content: center;
+            gap: 1rem;
         }
 
-        /* Quiz */
-        .quiz-card {
-            background: var(--surface);
-            padding: 2.5rem 2rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
+        /* Quiz UI */
+        .quiz-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .quiz-prompt-card {
+            background: #ffffff;
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
             text-align: center;
         }
 
-        .quiz-prompt {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
+        .prompt-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
         }
 
-        .quiz-input {
+        .prompt-word {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 2rem;
+        }
+
+        .custom-input {
             width: 100%;
-            padding: 1rem;
-            font-size: 1.25rem;
+            padding: 1.25rem 1rem;
+            font-size: 1.125rem;
             border: 2px solid var(--border);
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             outline: none;
             transition: var(--transition);
-            margin-bottom: 1rem;
             text-align: center;
+            background: var(--bg-color);
+            font-weight: 500;
+            margin-bottom: 1rem;
         }
 
-        .quiz-input:focus {
+        .custom-input:focus {
             border-color: var(--primary);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px var(--primary-light);
         }
 
-        .feedback {
-            font-size: 1.1rem;
+        .feedback-banner {
+            border-radius: var(--radius-md);
+            padding: 1rem;
             font-weight: 600;
-            min-height: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            animation: popIn 0.3s ease forwards;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .feedback-banner.correct {
+            display: block;
+            background: var(--success-light);
+            color: var(--success);
+            border: 1px solid #a7f3d0;
+        }
+
+        .feedback-banner.incorrect {
+            display: block;
+            background: var(--danger-light);
+            color: var(--danger);
+            border: 1px solid #fecaca;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.875rem 1.5rem;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-color);
+            border-color: var(--text-muted);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* Settings Modal */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000;
+            opacity: 0; pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            opacity: 1; pointer-events: auto;
+        }
+
+        .modal {
+            background: #ffffff;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            width: 90%; max-width: 500px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform: scale(0.95) translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
             margin-bottom: 1.5rem;
         }
 
-        .feedback.correct { color: var(--secondary); }
-        .feedback.incorrect { color: var(--danger); }
-        
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            font-weight: 600;
-            color: var(--text-muted);
+        .modal-header h2 {
+            font-size: 1.25rem; font-weight: 700;
         }
 
-        .back-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
+        .preset-group {
+            display: flex; gap: 0.75rem; margin-bottom: 1.5rem;
+        }
+
+        .preset-group .btn {
+            flex: 1; padding: 0.6rem; font-size: 0.875rem;
+        }
+
+        .unit-list {
+            display: grid; gap: 0.5rem; margin-bottom: 2rem;
+            max-height: 250px; overflow-y: auto; padding-right: 0.5rem;
+        }
+
+        .custom-checkbox {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            cursor: pointer; transition: var(--transition);
+        }
+
+        .custom-checkbox:hover { border-color: var(--primary); }
+
+        .custom-checkbox input[type="checkbox"] {
+            width: 1.25rem; height: 1.25rem;
+            accent-color: var(--primary);
             cursor: pointer;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .back-btn:hover { color: var(--primary); }
-
-        .vocab-count {
-            text-align: center;
-            margin-bottom: 2rem;
-            color: var(--text-muted);
-            font-size: 0.95rem;
         }
 
-        /* Responsive */
+        .modal-footer {
+            display: flex; justify-content: flex-end;
+        }
+
         @media (max-width: 600px) {
-            header { padding: 1rem; }
-            main { padding: 1rem; }
-            .flashcard-container { height: 250px; }
-            .card-face { font-size: 1.25rem; }
-            .preset-buttons { flex-direction: column; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .session-header { padding: 1rem; flex-wrap: wrap; gap: 1rem; }
+            .flashcard-wrapper { height: 280px; }
+            .preset-group { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
     <header>
-        <h1>Spanish 1 Practice</h1>
-        <button class="settings-btn" id="openSettingsBtn" title="Settings">⚙️</button>
+        <div class="logo">
+            <span>🇪🇸</span> Spanish 1 Hub
+        </div>
+        <button class="settings-btn" id="openSettingsBtn" title="Preferences">
+            ⚙️
+        </button>
     </header>
 
     <main>
-        <div id="vocabCountDisplay" class="vocab-count">Loading vocabulary...</div>
-
         <section id="dashboardView" class="view-section active">
+            <div class="vocab-status" id="vocabCountDisplay">Initializing...</div>
+            
             <div class="dashboard-grid">
-                <div class="card-btn" onclick="app.startMode('flashcards')">
-                    <div class="icon">📇</div>
-                    <h2>Flashcards</h2>
-                    <p>Review vocabulary at your own pace.</p>
+                <div class="action-card" onclick="app.startMode('flashcards')">
+                    <div class="card-icon">📇</div>
+                    <div class="card-content">
+                        <h2>Flashcards</h2>
+                        <p>Master your vocabulary at your own pace with interactive study cards.</p>
+                    </div>
                 </div>
-                <div class="card-btn" onclick="app.startMode('quiz')">
-                    <div class="icon">✍️</div>
-                    <h2>Strict Quiz</h2>
-                    <p>Type exactly. Case & accents matter!</p>
+                
+                <div class="action-card" onclick="app.startMode('quiz')">
+                    <div class="card-icon">🎯</div>
+                    <div class="card-content">
+                        <h2>Strict Quiz</h2>
+                        <p>Test your precision. Practice perfect spelling and correct accent marks.</p>
+                    </div>
                 </div>
-                <a href="/cultura" class="card-btn">
-                    <div class="icon">🌎</div>
-                    <h2>Semester 1 Cultura</h2>
-                    <p>Review cultural notes.</p>
+
+                <a href="/cultura" class="action-card">
+                    <div class="card-icon">🏛️</div>
+                    <div class="card-content">
+                        <h2>Semester 1 Cultura</h2>
+                        <p>Explore the cultural notes and traditions from the first semester.</p>
+                    </div>
                 </a>
-                <div class="card-btn disabled">
-                    <div class="icon">⏳</div>
-                    <h2>Semester 2 Cultura</h2>
-                    <p>Coming Soon...</p>
+
+                <div class="action-card disabled">
+                    <div class="card-icon">✈️</div>
+                    <div class="card-content">
+                        <h2>Semester 2 Cultura</h2>
+                        <p>New cultural insights and materials are currently on the way.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
         <section id="flashcardsView" class="view-section">
-            <div class="top-bar">
-                <button class="back-btn" onclick="app.showDashboard()">← Back</button>
-                <span id="fcProgress">1 / 10</span>
+            <div class="session-header">
+                <button class="back-btn" onclick="app.showDashboard()">
+                    ← <span>Exit Session</span>
+                </button>
+                <div class="session-stats">
+                    <div class="stat-badge">
+                        <span class="stat-label">Progress</span>
+                        <span class="stat-value" id="fcProgress">0 / 0</span>
+                    </div>
+                </div>
             </div>
             
-            <div class="flashcard-container">
+            <div class="flashcard-wrapper">
                 <div class="flashcard" id="flashcard" onclick="app.flipCard()">
-                    <div class="card-face">
+                    <div class="card-face card-front">
                         <span id="fcFront">Word</span>
-                        <span class="card-hint">Click to flip</span>
+                        <span class="flip-hint">Click to reveal translation</span>
                     </div>
                     <div class="card-face card-back">
                         <span id="fcBack">Translation</span>
+                        <span class="flip-hint" style="color:var(--primary)">Click to see Spanish</span>
                     </div>
                 </div>
             </div>
 
-            <div class="controls">
-                <button class="btn btn-outline" onclick="app.prevCard()">Previous</button>
-                <button class="btn" onclick="app.nextCard()">Next Word</button>
+            <div class="fc-controls">
+                <button class="btn btn-secondary" onclick="app.prevCard()">Back</button>
+                <button class="btn btn-primary" onclick="app.nextCard()">Next Card</button>
             </div>
         </section>
 
         <section id="quizView" class="view-section">
-            <div class="top-bar">
-                <button class="back-btn" onclick="app.showDashboard()">← Back</button>
-                <span id="quizProgress">1 / 10</span>
+            <div class="session-header">
+                <button class="back-btn" onclick="app.showDashboard()">
+                    ← <span>Exit Quiz</span>
+                </button>
+                <div class="session-stats">
+                    <div class="stat-badge">
+                        <span class="stat-label">Time</span>
+                        <span class="stat-value" id="quizTimer">00:00</span>
+                    </div>
+                    <div class="stat-badge">
+                        <span class="stat-label">Score</span>
+                        <span class="stat-value" id="quizScore">0 / 0</span>
+                    </div>
+                    <div class="stat-badge">
+                        <span class="stat-label">Item</span>
+                        <span class="stat-value" id="quizProgress">0 / 0</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="quiz-card">
-                <div class="quiz-prompt">Translate: <br><span id="quizWord" style="color:var(--primary); margin-top: 0.5rem; display:block;">Word</span></div>
-                <input type="text" id="quizInput" class="quiz-input" placeholder="Type the Spanish exact match..." autocomplete="off">
-                <div id="quizFeedback" class="feedback"></div>
-                <button id="quizSubmitBtn" class="btn" style="width: 100%; font-size: 1.1rem; padding: 1rem;" onclick="app.checkQuiz()">Submit</button>
+            <div class="quiz-container">
+                <div class="quiz-prompt-card">
+                    <div class="prompt-label">Translate to Spanish</div>
+                    <div class="prompt-word" id="quizWord">English Word</div>
+                    
+                    <input type="text" id="quizInput" class="custom-input" placeholder="Type exact translation here..." autocomplete="off">
+                    
+                    <div id="quizFeedback" class="feedback-banner"></div>
+                    
+                    <button id="quizSubmitBtn" class="btn btn-primary btn-block" onclick="app.checkQuiz()">Submit Answer</button>
+                </div>
             </div>
         </section>
-
     </main>
 
     <div class="modal-overlay" id="settingsModal">
         <div class="modal">
-            <h2>Select Units to Study</h2>
-            <div class="preset-buttons">
-                <button class="btn btn-outline" onclick="app.applyPreset('sem1')">Semester 1 (Prelim-3)</button>
-                <button class="btn btn-outline" onclick="app.applyPreset('sem2')">Semester 2 (4-6)</button>
+            <div class="modal-header">
+                <h2>Study Preferences</h2>
             </div>
+            
+            <div class="preset-group">
+                <button class="btn btn-secondary" onclick="app.applyPreset('sem1')">Semester 1</button>
+                <button class="btn btn-secondary" onclick="app.applyPreset('sem2')">Semester 2</button>
+            </div>
+            
             <div class="unit-list" id="unitCheckboxes">
                 </div>
+            
             <div class="modal-footer">
-                <button class="btn" onclick="app.closeSettings()">Save & Close</button>
+                <button class="btn btn-primary" onclick="app.closeSettings()">Save Changes</button>
             </div>
         </div>
     </div>
@@ -465,9 +657,14 @@
             ],
             defaultUnits: ["Unidad 4", "Unidad 5", "Unidad 6"],
             
-            // Mode state
-            mode: 'dashboard', // dashboard, flashcards, quiz
+            // Shared State
+            mode: 'dashboard',
             currentIndex: 0,
+            
+            // Quiz Specific State
+            quizCorrect: 0,
+            timerInterval: null,
+            secondsElapsed: 0,
             
             async init() {
                 this.bindEvents();
@@ -478,12 +675,19 @@
             bindEvents() {
                 document.getElementById('openSettingsBtn').addEventListener('click', () => this.openSettings());
                 
-                // Allow Enter key for quiz
+                // Keyboard support for quiz
                 document.getElementById('quizInput').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         const btnText = document.getElementById('quizSubmitBtn').innerText;
-                        if(btnText === 'Submit') this.checkQuiz();
+                        if(btnText === 'Submit Answer') this.checkQuiz();
                         else this.nextQuizItem();
+                    }
+                });
+
+                // Close modal on outside click
+                document.getElementById('settingsModal').addEventListener('click', (e) => {
+                    if (e.target === document.getElementById('settingsModal')) {
+                        this.closeSettings();
                     }
                 });
             },
@@ -491,12 +695,12 @@
             async fetchData() {
                 try {
                     const res = await fetch('./spanish_1_words.json');
-                    if(!res.ok) throw new Error("Could not load JSON");
+                    if(!res.ok) throw new Error("Fetch failed");
                     this.allData = await res.json();
                     this.updateVocabList();
                 } catch (error) {
-                    document.getElementById('vocabCountDisplay').innerText = "Error loading data. Ensure you are running this file via a local web server (e.g., Live Server) so fetch() works properly.";
-                    console.error(error);
+                    document.getElementById('vocabCountDisplay').innerText = "⚠️ Local server required to load words.";
+                    console.error("Please run this via a local server (e.g. VSCode Live Server) due to CORS policies on file:///", error);
                 }
             },
 
@@ -505,9 +709,12 @@
                 container.innerHTML = '';
                 this.units.forEach(unit => {
                     const label = document.createElement('label');
-                    label.className = 'checkbox-label';
+                    label.className = 'custom-checkbox';
                     const isChecked = this.defaultUnits.includes(unit) ? 'checked' : '';
-                    label.innerHTML = `<input type="checkbox" value="${unit}" class="unit-cb" ${isChecked}> ${unit}`;
+                    label.innerHTML = `
+                        <input type="checkbox" value="${unit}" class="unit-cb" ${isChecked}> 
+                        <span>${unit}</span>
+                    `;
                     container.appendChild(label);
                 });
             },
@@ -547,19 +754,23 @@
                 });
 
                 const countText = selected.length === 0 
-                    ? "Please select at least one unit in Settings ⚙️."
-                    : `Active terms: ${this.currentVocab.length} (from ${selected.join(', ')})`;
+                    ? "Select units in settings to begin."
+                    : `${this.currentVocab.length} active words from ${selected.length} unit(s)`;
                 
                 document.getElementById('vocabCountDisplay').innerText = countText;
             },
 
             showDashboard() {
+                this.stopTimer(); // Ensure timer stops if leaving quiz
                 this.switchView('dashboardView');
             },
 
             switchView(viewId) {
                 document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-                document.getElementById(viewId).classList.add('active');
+                // Slight delay for animation smooth rendering
+                setTimeout(() => {
+                    document.getElementById(viewId).classList.add('active');
+                }, 50);
             },
 
             shuffle(array) {
@@ -574,7 +785,7 @@
 
             startMode(mode) {
                 if (this.currentVocab.length === 0) {
-                    alert("No vocabulary loaded. Please select units in settings.");
+                    alert("Please select at least one unit in your Preferences ⚙️.");
                     return;
                 }
                 
@@ -586,7 +797,7 @@
                     this.renderFlashcard();
                 } else if (mode === 'quiz') {
                     this.switchView('quizView');
-                    this.renderQuizItem();
+                    this.startQuizSession();
                 }
             },
 
@@ -596,7 +807,8 @@
                 card.classList.remove('is-flipped');
                 
                 const item = this.currentVocab[this.currentIndex];
-                // Wait slightly for flip animation to reset before changing text
+                
+                // Allow card to flip back before changing text content
                 setTimeout(() => {
                     document.getElementById('fcFront').innerText = item.spanish;
                     document.getElementById('fcBack').innerText = item.english;
@@ -613,7 +825,8 @@
                     this.currentIndex++;
                     this.renderFlashcard();
                 } else {
-                    alert("You've reached the end of the selected vocabulary!");
+                    alert("You've reviewed all cards in this set!");
+                    this.showDashboard();
                 }
             },
 
@@ -625,6 +838,37 @@
             },
 
             // --- Quiz Logic ---
+            startQuizSession() {
+                this.quizCorrect = 0;
+                this.secondsElapsed = 0;
+                this.updateScoreDisplay();
+                this.updateTimerDisplay();
+                
+                this.timerInterval = setInterval(() => {
+                    this.secondsElapsed++;
+                    this.updateTimerDisplay();
+                }, 1000);
+
+                this.renderQuizItem();
+            },
+
+            stopTimer() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+            },
+
+            updateTimerDisplay() {
+                const m = Math.floor(this.secondsElapsed / 60).toString().padStart(2, '0');
+                const s = (this.secondsElapsed % 60).toString().padStart(2, '0');
+                document.getElementById('quizTimer').innerText = `${m}:${s}`;
+            },
+
+            updateScoreDisplay() {
+                document.getElementById('quizScore').innerText = `${this.quizCorrect} / ${this.currentVocab.length}`;
+            },
+
             renderQuizItem() {
                 const item = this.currentVocab[this.currentIndex];
                 document.getElementById('quizWord').innerText = item.english;
@@ -635,11 +879,11 @@
                 input.focus();
 
                 const fb = document.getElementById('quizFeedback');
+                fb.className = 'feedback-banner'; // hides it
                 fb.innerText = '';
-                fb.className = 'feedback';
 
                 const btn = document.getElementById('quizSubmitBtn');
-                btn.innerText = 'Submit';
+                btn.innerText = 'Submit Answer';
                 btn.onclick = () => this.checkQuiz();
                 
                 document.getElementById('quizProgress').innerText = `${this.currentIndex + 1} / ${this.currentVocab.length}`;
@@ -650,22 +894,24 @@
                 const userVal = inputEl.value.trim();
                 const correctVal = this.currentVocab[this.currentIndex].spanish;
                 
-                if (userVal === '') return;
+                if (userVal === '') return; // Prevent empty submission
 
-                const fb = document.getElementById('quizFeedback');
                 inputEl.disabled = true;
+                const fb = document.getElementById('quizFeedback');
 
-                // Exact match (case sensitive, accent sensitive)
                 if (userVal === correctVal) {
-                    fb.innerText = "¡Correcto!";
-                    fb.className = "feedback correct";
+                    this.quizCorrect++;
+                    fb.innerText = "¡Excelente! That's perfectly correct.";
+                    fb.className = "feedback-banner correct";
                 } else {
-                    fb.innerText = `Incorrect. The exact answer is: ${correctVal}`;
-                    fb.className = "feedback incorrect";
+                    fb.innerHTML = `Not quite. The exact answer is:<br><strong>${correctVal}</strong>`;
+                    fb.className = "feedback-banner incorrect";
                 }
 
+                this.updateScoreDisplay();
+
                 const btn = document.getElementById('quizSubmitBtn');
-                btn.innerText = 'Next';
+                btn.innerText = 'Next Question';
                 btn.onclick = () => this.nextQuizItem();
             },
 
@@ -674,13 +920,19 @@
                     this.currentIndex++;
                     this.renderQuizItem();
                 } else {
-                    alert("Quiz Complete! Great job.");
-                    this.showDashboard();
+                    this.stopTimer();
+                    const m = Math.floor(this.secondsElapsed / 60).toString().padStart(2, '0');
+                    const s = (this.secondsElapsed % 60).toString().padStart(2, '0');
+                    
+                    setTimeout(() => {
+                        alert(`Quiz Complete!\n\nFinal Score: ${this.quizCorrect}/${this.currentVocab.length}\nTime: ${m}:${s}`);
+                        this.showDashboard();
+                    }, 100);
                 }
             }
         };
 
-        // Initialize app on load
+        // Boot the app
         window.onload = () => app.init();
     </script>
 </body>

@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spanish 1 Practice Hub</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
     <style>
         :root {
+            /* Light Theme Variables */
             --primary: #4f46e5;
             --primary-hover: #4338ca;
             --primary-light: #e0e7ff;
@@ -16,17 +20,42 @@
             --success-light: #d1fae5;
             --danger: #dc2626;
             --danger-light: #fee2e2;
+            
+            --bg-color: #f8fafc;
+            --surface: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.7);
             --text-main: #0f172a;
             --text-muted: #64748b;
-            --bg-color: #f8fafc;
-            --card-bg: rgba(255, 255, 255, 0.7);
             --border: #e2e8f0;
+            --input-bg: #f8fafc;
+            
             --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
             --radius-lg: 20px;
             --radius-md: 12px;
             --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+            --blob-1: #e0e7ff;
+            --blob-2: #fce7f3;
+        }
+
+        .dark-theme {
+            /* Dark Theme Variables */
+            --bg-color: #0f172a;
+            --surface: #1e293b;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --input-bg: #0f172a;
+            
+            --primary-light: rgba(79, 70, 229, 0.2);
+            --success-light: rgba(5, 150, 105, 0.2);
+            --danger-light: rgba(220, 38, 38, 0.2);
+
+            --blob-1: rgba(79, 70, 229, 0.15);
+            --blob-2: rgba(236, 72, 153, 0.1);
         }
 
         * {
@@ -44,6 +73,7 @@
             flex-direction: column;
             position: relative;
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* Atmospheric Background Blurs */
@@ -54,9 +84,10 @@
             z-index: -1;
             opacity: 0.6;
             pointer-events: none;
+            transition: background 0.5s ease;
         }
-        .blob-1 { top: -10%; left: -5%; width: 400px; height: 400px; background: #e0e7ff; }
-        .blob-2 { bottom: -10%; right: -5%; width: 500px; height: 500px; background: #fce7f3; }
+        .blob-1 { top: -10%; left: -5%; width: 400px; height: 400px; background: var(--blob-1); }
+        .blob-2 { bottom: -10%; right: -5%; width: 500px; height: 500px; background: var(--blob-2); }
 
         /* App Layout */
         header {
@@ -78,9 +109,12 @@
             align-items: center;
             gap: 0.5rem;
         }
+        
+        .logo i { color: var(--primary); font-size: 1.5rem; }
 
         .settings-btn {
-            background: #ffffff;
+            background: var(--surface);
+            color: var(--text-main);
             border: 1px solid var(--border);
             border-radius: 50%;
             width: 44px; height: 44px;
@@ -94,6 +128,8 @@
         .settings-btn:hover {
             box-shadow: var(--shadow-md);
             transform: rotate(30deg);
+            color: var(--primary);
+            border-color: var(--primary);
         }
 
         main {
@@ -119,8 +155,10 @@
         }
 
         .vocab-status {
-            display: inline-block;
-            background: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--surface);
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 0.875rem;
@@ -141,7 +179,7 @@
         .action-card {
             background: var(--card-bg);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--border);
             border-radius: var(--radius-lg);
             padding: 1.75rem;
             text-decoration: none;
@@ -159,8 +197,8 @@
         .action-card:hover:not(.disabled) {
             transform: translateY(-4px);
             box-shadow: var(--shadow-lg);
-            border-color: #ffffff;
-            background: #ffffff;
+            border-color: var(--primary);
+            background: var(--surface);
         }
 
         .action-card.disabled {
@@ -171,6 +209,7 @@
 
         .card-icon {
             font-size: 2rem;
+            color: var(--primary);
             background: var(--primary-light);
             width: 60px; height: 60px;
             display: flex; align-items: center; justify-content: center;
@@ -197,7 +236,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
-            background: #ffffff;
+            background: var(--surface);
             padding: 1rem 1.5rem;
             border-radius: var(--radius-lg);
             border: 1px solid var(--border);
@@ -213,7 +252,7 @@
             transition: var(--transition);
         }
         
-        .back-btn:hover { color: var(--text-main); }
+        .back-btn:hover { color: var(--primary); }
 
         .session-stats {
             display: flex;
@@ -266,7 +305,7 @@
             position: absolute;
             width: 100%; height: 100%;
             backface-visibility: hidden;
-            background: #ffffff;
+            background: var(--surface);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-lg);
             border: 1px solid var(--border);
@@ -299,6 +338,9 @@
             font-size: 0.85rem;
             color: var(--text-muted);
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
         }
 
         .fc-controls {
@@ -314,7 +356,7 @@
         }
 
         .quiz-prompt-card {
-            background: #ffffff;
+            background: var(--surface);
             border-radius: var(--radius-lg);
             padding: 2.5rem;
             box-shadow: var(--shadow-lg);
@@ -342,19 +384,20 @@
             width: 100%;
             padding: 1.25rem 1rem;
             font-size: 1.125rem;
+            color: var(--text-main);
             border: 2px solid var(--border);
             border-radius: var(--radius-md);
             outline: none;
             transition: var(--transition);
             text-align: center;
-            background: var(--bg-color);
+            background: var(--input-bg);
             font-weight: 500;
             margin-bottom: 1rem;
         }
 
         .custom-input:focus {
             border-color: var(--primary);
-            background: #ffffff;
+            background: var(--surface);
             box-shadow: 0 0 0 4px var(--primary-light);
         }
 
@@ -413,7 +456,7 @@
         }
 
         .btn-secondary {
-            background: #ffffff;
+            background: var(--surface);
             color: var(--text-main);
             border: 1px solid var(--border);
         }
@@ -430,7 +473,7 @@
         /* Settings Modal */
         .modal-overlay {
             position: fixed; inset: 0;
-            background: rgba(15, 23, 42, 0.4);
+            background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(4px);
             display: flex; justify-content: center; align-items: center;
             z-index: 1000;
@@ -443,13 +486,14 @@
         }
 
         .modal {
-            background: #ffffff;
+            background: var(--surface);
             border-radius: var(--radius-lg);
             padding: 2rem;
             width: 90%; max-width: 500px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             transform: scale(0.95) translateY(10px);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border);
         }
 
         .modal-overlay.active .modal {
@@ -458,11 +502,36 @@
 
         .modal-header {
             margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .modal-header h2 {
-            font-size: 1.25rem; font-weight: 700;
+            font-size: 1.25rem; font-weight: 700; color: var(--text-main);
         }
+        
+        .modal-header i { font-size: 1.5rem; color: var(--text-muted); }
+
+        /* Toggle Switch */
+        .theme-toggle-row {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+        }
+
+        .theme-toggle-row i { font-size: 1.2rem; margin-right: 0.5rem; vertical-align: middle; }
+
+        .switch { position: relative; display: inline-block; width: 46px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(22px); }
 
         .preset-group {
             display: flex; gap: 0.75rem; margin-bottom: 1.5rem;
@@ -513,20 +582,22 @@
 
     <header>
         <div class="logo">
-            <span>🇪🇸</span> Spanish 1 Hub
+            <i class="ph-fill ph-books"></i> Spanish 1 Hub
         </div>
         <button class="settings-btn" id="openSettingsBtn" title="Preferences">
-            ⚙️
+            <i class="ph-bold ph-gear"></i>
         </button>
     </header>
 
     <main>
         <section id="dashboardView" class="view-section active">
-            <div class="vocab-status" id="vocabCountDisplay">Initializing...</div>
+            <div class="vocab-status" id="vocabCountDisplay">
+                <i class="ph ph-spinner-gap"></i> Initializing...
+            </div>
             
             <div class="dashboard-grid">
                 <div class="action-card" onclick="app.startMode('flashcards')">
-                    <div class="card-icon">📇</div>
+                    <div class="card-icon"><i class="ph-fill ph-cards"></i></div>
                     <div class="card-content">
                         <h2>Flashcards</h2>
                         <p>Master your vocabulary at your own pace with interactive study cards.</p>
@@ -534,15 +605,23 @@
                 </div>
                 
                 <div class="action-card" onclick="app.startMode('quiz')">
-                    <div class="card-icon">🎯</div>
+                    <div class="card-icon"><i class="ph-fill ph-target"></i></div>
                     <div class="card-content">
                         <h2>Strict Quiz</h2>
                         <p>Test your precision. Practice perfect spelling and correct accent marks.</p>
                     </div>
                 </div>
 
+                <a href="https://docs.google.com/spreadsheets/d/1yHiUm-jIy4uflBeEDBCLrar2J8ZFGx1ck3oN0bktnX8/edit?usp=sharing" target="_blank" class="action-card">
+                    <div class="card-icon"><i class="ph-fill ph-table"></i></div>
+                    <div class="card-content">
+                        <h2>Master Vocab Sheet</h2>
+                        <p>View the complete, official vocabulary spreadsheet for the course.</p>
+                    </div>
+                </a>
+
                 <a href="/cultura" class="action-card">
-                    <div class="card-icon">🏛️</div>
+                    <div class="card-icon"><i class="ph-fill ph-bank"></i></div>
                     <div class="card-content">
                         <h2>Semester 1 Cultura</h2>
                         <p>Explore the cultural notes and traditions from the first semester.</p>
@@ -550,7 +629,7 @@
                 </a>
 
                 <div class="action-card disabled">
-                    <div class="card-icon">✈️</div>
+                    <div class="card-icon"><i class="ph-fill ph-airplane-tilt"></i></div>
                     <div class="card-content">
                         <h2>Semester 2 Cultura</h2>
                         <p>New cultural insights and materials are currently on the way.</p>
@@ -562,7 +641,7 @@
         <section id="flashcardsView" class="view-section">
             <div class="session-header">
                 <button class="back-btn" onclick="app.showDashboard()">
-                    ← <span>Exit Session</span>
+                    <i class="ph-bold ph-arrow-left"></i> <span>Exit Session</span>
                 </button>
                 <div class="session-stats">
                     <div class="stat-badge">
@@ -576,25 +655,25 @@
                 <div class="flashcard" id="flashcard" onclick="app.flipCard()">
                     <div class="card-face card-front">
                         <span id="fcFront">Word</span>
-                        <span class="flip-hint">Click to reveal translation</span>
+                        <span class="flip-hint"><i class="ph-bold ph-arrows-left-right"></i> Click to reveal translation</span>
                     </div>
                     <div class="card-face card-back">
                         <span id="fcBack">Translation</span>
-                        <span class="flip-hint" style="color:var(--primary)">Click to see Spanish</span>
+                        <span class="flip-hint" style="color:var(--primary)"><i class="ph-bold ph-arrows-left-right"></i> Click to see Spanish</span>
                     </div>
                 </div>
             </div>
 
             <div class="fc-controls">
-                <button class="btn btn-secondary" onclick="app.prevCard()">Back</button>
-                <button class="btn btn-primary" onclick="app.nextCard()">Next Card</button>
+                <button class="btn btn-secondary" onclick="app.prevCard()"><i class="ph-bold ph-caret-left"></i> Back</button>
+                <button class="btn btn-primary" onclick="app.nextCard()">Next Card <i class="ph-bold ph-caret-right"></i></button>
             </div>
         </section>
 
         <section id="quizView" class="view-section">
             <div class="session-header">
                 <button class="back-btn" onclick="app.showDashboard()">
-                    ← <span>Exit Quiz</span>
+                    <i class="ph-bold ph-arrow-left"></i> <span>Exit Quiz</span>
                 </button>
                 <div class="session-stats">
                     <div class="stat-badge">
@@ -630,9 +709,18 @@
     <div class="modal-overlay" id="settingsModal">
         <div class="modal">
             <div class="modal-header">
+                <i class="ph-bold ph-faders"></i>
                 <h2>Study Preferences</h2>
             </div>
             
+            <div class="theme-toggle-row">
+                <span><i class="ph-fill ph-moon"></i> Dark Theme</span>
+                <label class="switch">
+                    <input type="checkbox" id="themeToggle" onchange="app.toggleTheme(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
             <div class="preset-group">
                 <button class="btn btn-secondary" onclick="app.applyPreset('sem1')">Semester 1</button>
                 <button class="btn btn-secondary" onclick="app.applyPreset('sem2')">Semester 2</button>
@@ -668,8 +756,10 @@
             
             async init() {
                 this.bindEvents();
+                this.loadThemePreference();
                 this.renderSettings();
                 await this.fetchData();
+                this.checkFirstLaunch();
             },
 
             bindEvents() {
@@ -692,6 +782,29 @@
                 });
             },
 
+            checkFirstLaunch() {
+                const hasLaunched = localStorage.getItem('hasLaunchedBefore');
+                if (!hasLaunched) {
+                    this.openSettings();
+                    localStorage.setItem('hasLaunchedBefore', 'true');
+                }
+            },
+
+            loadThemePreference() {
+                const isDark = localStorage.getItem('darkTheme') === 'true';
+                document.getElementById('themeToggle').checked = isDark;
+                this.toggleTheme(isDark);
+            },
+
+            toggleTheme(isDark) {
+                if(isDark) {
+                    document.body.classList.add('dark-theme');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                }
+                localStorage.setItem('darkTheme', isDark);
+            },
+
             async fetchData() {
                 try {
                     const res = await fetch('./spanish_1_words.json');
@@ -699,7 +812,7 @@
                     this.allData = await res.json();
                     this.updateVocabList();
                 } catch (error) {
-                    document.getElementById('vocabCountDisplay').innerText = "⚠️ Local server required to load words.";
+                    document.getElementById('vocabCountDisplay').innerHTML = "<i class='ph-bold ph-warning-circle'></i> Local server required to load words.";
                     console.error("Please run this via a local server (e.g. VSCode Live Server) due to CORS policies on file:///", error);
                 }
             },
@@ -754,20 +867,19 @@
                 });
 
                 const countText = selected.length === 0 
-                    ? "Select units in settings to begin."
-                    : `${this.currentVocab.length} active words from ${selected.length} unit(s)`;
+                    ? "<i class='ph-bold ph-warning-circle'></i> Select units in settings to begin."
+                    : `<i class='ph-bold ph-check-circle'></i> ${this.currentVocab.length} active words from ${selected.length} unit(s)`;
                 
-                document.getElementById('vocabCountDisplay').innerText = countText;
+                document.getElementById('vocabCountDisplay').innerHTML = countText;
             },
 
             showDashboard() {
-                this.stopTimer(); // Ensure timer stops if leaving quiz
+                this.stopTimer();
                 this.switchView('dashboardView');
             },
 
             switchView(viewId) {
                 document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-                // Slight delay for animation smooth rendering
                 setTimeout(() => {
                     document.getElementById(viewId).classList.add('active');
                 }, 50);
@@ -785,7 +897,8 @@
 
             startMode(mode) {
                 if (this.currentVocab.length === 0) {
-                    alert("Please select at least one unit in your Preferences ⚙️.");
+                    alert("Please select at least one unit in your Preferences.");
+                    this.openSettings();
                     return;
                 }
                 
@@ -808,7 +921,6 @@
                 
                 const item = this.currentVocab[this.currentIndex];
                 
-                // Allow card to flip back before changing text content
                 setTimeout(() => {
                     document.getElementById('fcFront').innerText = item.spanish;
                     document.getElementById('fcBack').innerText = item.english;
@@ -879,7 +991,7 @@
                 input.focus();
 
                 const fb = document.getElementById('quizFeedback');
-                fb.className = 'feedback-banner'; // hides it
+                fb.className = 'feedback-banner'; 
                 fb.innerText = '';
 
                 const btn = document.getElementById('quizSubmitBtn');
@@ -894,17 +1006,17 @@
                 const userVal = inputEl.value.trim();
                 const correctVal = this.currentVocab[this.currentIndex].spanish;
                 
-                if (userVal === '') return; // Prevent empty submission
+                if (userVal === '') return;
 
                 inputEl.disabled = true;
                 const fb = document.getElementById('quizFeedback');
 
                 if (userVal === correctVal) {
                     this.quizCorrect++;
-                    fb.innerText = "¡Excelente! That's perfectly correct.";
+                    fb.innerHTML = "<i class='ph-bold ph-check-circle'></i> ¡Excelente! That's perfectly correct.";
                     fb.className = "feedback-banner correct";
                 } else {
-                    fb.innerHTML = `Not quite. The exact answer is:<br><strong>${correctVal}</strong>`;
+                    fb.innerHTML = `<i class='ph-bold ph-x-circle'></i> Not quite. The exact answer is:<br><strong style="margin-top:0.5rem; display:block;">${correctVal}</strong>`;
                     fb.className = "feedback-banner incorrect";
                 }
 

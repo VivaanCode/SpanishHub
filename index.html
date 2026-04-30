@@ -257,6 +257,9 @@
         .session-stats {
             display: flex;
             gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
         }
 
         .stat-badge {
@@ -278,6 +281,33 @@
             font-weight: 700;
             color: var(--text-main);
             font-variant-numeric: tabular-nums;
+        }
+
+        .flashcard-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .flashcard-toggle .toggle-label {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.2;
+        }
+
+        .flashcard-toggle .toggle-label span:last-child {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
         /* Flashcards */
@@ -633,6 +663,7 @@
             .flashcard-wrapper { height: 280px; }
             .preset-group { flex-direction: column; }
             .mcq-options { grid-template-columns: 1fr; }
+            .flashcard-toggle { width: 100%; justify-content: space-between; }
         }
     </style>
 </head>
@@ -713,6 +744,16 @@
                     <i class="ph-bold ph-arrow-left"></i> <span>Exit Session</span>
                 </button>
                 <div class="session-stats">
+                    <div class="flashcard-toggle">
+                        <div class="toggle-label">
+                            <span id="flashcardLanguageLabel">Showing English</span>
+                            <span>Front side language</span>
+                        </div>
+                        <label class="switch" aria-label="Toggle flashcard language">
+                            <input type="checkbox" id="flashcardLanguageToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                     <div class="stat-badge">
                         <span class="stat-label">Progress</span>
                         <span class="stat-value" id="fcProgress">0 / 0</span>
@@ -724,11 +765,11 @@
                 <div class="flashcard" id="flashcard" onclick="app.flipCard()">
                     <div class="card-face card-front">
                         <span id="fcFront">Word</span>
-                        <span class="flip-hint"><i class="ph-bold ph-arrows-left-right"></i> Click to reveal translation</span>
+                        <span class="flip-hint" id="fcFrontHint"><i class="ph-bold ph-arrows-left-right"></i> Click to reveal Spanish</span>
                     </div>
                     <div class="card-face card-back">
                         <span id="fcBack">Translation</span>
-                        <span class="flip-hint" style="color:var(--primary)"><i class="ph-bold ph-arrows-left-right"></i> Click to see Spanish</span>
+                        <span class="flip-hint" id="fcBackHint" style="color:var(--primary)"><i class="ph-bold ph-arrows-left-right"></i> Click to see English</span>
                     </div>
                 </div>
             </div>
@@ -848,6 +889,7 @@
         const app = {
             allData: {},
             currentVocab: [],
+            flashcardsShowEnglish: true,
             units: [
                 "Unidad Preliminar", "Unidad 1", "Unidad 2", 
                 "Unidad 3", "Unidad 4", "Unidad 5", "Unidad 6"
@@ -873,6 +915,9 @@
 
             bindEvents() {
                 document.getElementById('openSettingsBtn').addEventListener('click', () => this.openSettings());
+                document.getElementById('flashcardLanguageToggle').addEventListener('change', (e) => {
+                    this.setFlashcardLanguageMode(e.target.checked);
+                });
                 
                 // Keyboard support for Free Response quiz
                 document.getElementById('quizInput').addEventListener('keypress', (e) => {
@@ -983,6 +1028,7 @@
             },
 
             showDashboard() {
+                this.mode = 'dashboard';
                 this.stopTimer();
                 this.switchView('dashboardView');
             },
@@ -1014,6 +1060,8 @@
             },
 
             startMode(mode) {
+                this.mode = mode;
+
                 if (this.currentVocab.length === 0) {
                     alert("Please select at least one unit in your Preferences.");
                     this.openSettings();
@@ -1031,6 +1079,8 @@
                 this.currentIndex = 0;
 
                 if (mode === 'flashcards') {
+                    this.flashcardsShowEnglish = true;
+                    this.syncFlashcardLanguageToggle();
                     this.switchView('flashcardsView');
                     this.renderFlashcard();
                 } else if (mode === 'quiz') {
@@ -1048,12 +1098,36 @@
                 card.classList.remove('is-flipped');
                 
                 const item = this.currentVocab[this.currentIndex];
+                if (!item) return;
                 
                 setTimeout(() => {
-                    document.getElementById('fcFront').innerText = item.spanish;
-                    document.getElementById('fcBack').innerText = item.english;
+                    const frontText = this.flashcardsShowEnglish ? item.english : item.spanish;
+                    const backText = this.flashcardsShowEnglish ? item.spanish : item.english;
+                    document.getElementById('fcFront').innerText = frontText;
+                    document.getElementById('fcBack').innerText = backText;
+                    document.getElementById('fcFrontHint').innerHTML = this.flashcardsShowEnglish
+                        ? "<i class='ph-bold ph-arrows-left-right'></i> Click to reveal Spanish"
+                        : "<i class='ph-bold ph-arrows-left-right'></i> Click to reveal English";
+                    document.getElementById('fcBackHint').innerHTML = this.flashcardsShowEnglish
+                        ? "<i class='ph-bold ph-arrows-left-right'></i> Click to see Spanish"
+                        : "<i class='ph-bold ph-arrows-left-right'></i> Click to see English";
                     document.getElementById('fcProgress').innerText = `${this.currentIndex + 1} / ${this.currentVocab.length}`;
                 }, 150);
+            },
+
+            syncFlashcardLanguageToggle() {
+                const toggle = document.getElementById('flashcardLanguageToggle');
+                const label = document.getElementById('flashcardLanguageLabel');
+                toggle.checked = this.flashcardsShowEnglish;
+                label.innerText = this.flashcardsShowEnglish ? 'Showing English' : 'Showing Spanish';
+            },
+
+            setFlashcardLanguageMode(showEnglish) {
+                this.flashcardsShowEnglish = showEnglish;
+                this.syncFlashcardLanguageToggle();
+                if (this.mode === 'flashcards' && this.currentVocab.length > 0) {
+                    this.renderFlashcard();
+                }
             },
 
             flipCard() {

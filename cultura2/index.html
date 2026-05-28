@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cultura - Spanish 2 Hub</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-light: #e0e7ff;
+            --success: #059669;
+            --danger: #dc2626;
+            
+            --bg-color: #f8fafc;
+            --surface: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --table-header: #f1f5f9;
+            --table-stripe: #f8fafc;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+            --blob-1: #e0e7ff;
+            --blob-2: #fce7f3;
+        }
+
+        .dark-theme {
+            --bg-color: #0f172a;
+            --surface: #1e293b;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --table-header: #0f172a;
+            --table-stripe: #1e293b;
+            
+            --primary-light: rgba(79, 70, 229, 0.2);
+
+            --blob-1: rgba(79, 70, 229, 0.15);
+            --blob-2: rgba(236, 72, 153, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.6;
+            pointer-events: none;
+            transition: background 0.5s ease;
+        }
+        .blob-1 { top: -10%; left: -5%; width: 400px; height: 400px; background: var(--blob-1); }
+        .blob-2 { bottom: -10%; right: -5%; width: 500px; height: 500px; background: var(--blob-2); }
+
+        header {
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo i { color: var(--primary); font-size: 1.5rem; }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .icon-btn {
+            background: var(--surface);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 44px; height: 44px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            font-size: 1.25rem;
+            text-decoration: none;
+        }
+
+        .icon-btn:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .cultura-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            height: 280px;
+        }
+
+        .cultura-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .page-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            background: var(--primary-light);
+            color: var(--primary);
+            align-self: flex-start;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .card-fade {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, var(--surface) 90%);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 1rem;
+            pointer-events: none;
+        }
+
+        .expand-hint {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: var(--transition);
+        }
+
+        .cultura-card:hover .expand-hint {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal-content-data {
+            display: none; 
+        }
+
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000;
+            opacity: 0; pointer-events: none;
+            transition: var(--transition);
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            opacity: 1; pointer-events: auto;
+        }
+
+        .modal-container {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            width: 100%; max-width: 800px;
+            max-height: 90vh;
+            display: flex; flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+            transform: scale(0.95) translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: flex-start;
+            background: var(--surface);
+        }
+
+        .modal-header-titles {
+            display: flex; flex-direction: column; gap: 0.5rem;
+        }
+
+        .modal-close-btn {
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: var(--transition);
+        }
+
+        .modal-close-btn:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+            overflow-y: auto;
+            color: var(--text-main);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        .modal-body p { margin-bottom: 1.25rem; }
+        .modal-body strong { color: var(--primary); font-weight: 700; }
+        .modal-body .text-italic { font-style: italic; }
+        
+        .modal-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .modal-body th, .modal-body td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .modal-body th {
+            background: var(--table-header);
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .modal-body tbody tr:nth-child(even) { background: var(--table-stripe); }
+        .modal-body tbody tr:last-child td { border-bottom: none; }
+
+        .modal-body ol.question-list {
+            margin: 1.5rem 0 1.5rem 1.5rem;
+            padding-left: 1rem;
+        }
+        
+        .modal-body ol.question-list li { margin-bottom: 0.5rem; padding-left: 0.5rem;}
+
+        .image-wrapper {
+            margin: 1.5rem 0;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--bg-color);
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .image-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .image-row .image-wrapper { margin: 0; }
+
+        .caption {
+            font-size: 0.85rem;
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: -0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 700px) {
+            .modal-overlay { padding: 1rem; }
+            .modal-body { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <header>
+        <div class="logo">
+            <i class="ph-fill ph-bank"></i> Cultura Hub
+        </div>
+        <div class="header-actions">
+            <button class="icon-btn" onclick="toggleTheme()" title="Toggle Theme">
+                <i class="ph-fill ph-moon" id="themeIcon"></i>
+            </button>
+            <a href="/" class="icon-btn" title="Back to Dashboard">
+                <i class="ph-bold ph-house"></i>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <h1 class="page-title">Cultura</h1>
+        <p class="page-subtitle">All cultural material required for the Semester 2 Final exam.</p>
+
+        <div class="grid">
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U4 · Página 197</span>
+                    <h2 class="card-title">Vive entre culturas</h2>
+                </header>
+                <div class="card-body">
+                    <p>Food trucks are bringing new foods to neighborhoods around the world and creating intercultural experiences centered around food.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>Food trucks are bringing new foods to neighborhoods around the world, accelerating the fusion of food traditions and providing opportunities for intercultural experiences centered around food.</p>
+                    <p>In this activity, students read about a food truck bringing traditional Mexican food to neighborhoods in the Dominican Republic. Then they compare menu choices and personal food preferences before creating a food truck and menu that reflect foods from different Spanish-speaking countries.</p>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U4 · Página 205</span>
+                    <h2 class="card-title">El kilo</h2>
+                </header>
+                <div class="card-body">
+                    <p>The metric system is used in most countries, and market produce is commonly sold by the kilogram.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>En casi todos los países del mundo, se usa el sistema decimal o métrico. La unidad de peso en los mercados es el kilogramo. El prefijo <strong>kilo</strong> significa “mil”, así que un kilogramo son 1.000 gramos, aproximadamente 2,2 libras.</p>
+                    <p>Si quieres comprar una libra de uvas, por ejemplo, tienes que pedir <strong>medio kilo</strong>, que son 500 gramos.</p>
+                    <div class="image-wrapper">
+                        <img src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files11/shutterstock_387617791.png" alt="Bolsas de naranjas">
+                    </div>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U4 · Página 209</span>
+                    <h2 class="card-title">Las aguas frescas</h2>
+                </header>
+                <div class="card-body">
+                    <p>Las aguas frescas are refreshing drinks popular in Mexico and in parts of the United States.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>Las aguas frescas son bebidas refrescantes y saludables que son populares en México y en partes de los Estados Unidos. Típicamente se venden en los mercados y en las calles.</p>
+                    <p>Los sabores más populares son el agua de jamaica, de sandía, de limón, de melón, de piña, de tamarindo y de horchata de arroz.</p>
+                    <div class="image-wrapper">
+                        <img src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files11/161351060_af2105b049_o.png" alt="Aguas frescas">
+                    </div>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U4 · Página 221</span>
+                    <h2 class="card-title">El horario de comidas</h2>
+                </header>
+                <div class="card-body">
+                    <p>Meal times vary by region. Mexico and Spain share a late main meal, but Spain typically eats dinner even later.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>El horario de las comidas diarias varía de región en región. En México, el desayuno es a las 8:00 o el almuerzo, similar al brunch, a las 10:00. La comida principal es a las 2:00 de la tarde. La cena es una comida ligera a las 8:00 de la noche.</p>
+                    <p>En España, los españoles típicamente desayunan café con leche y una tostada con aceite de oliva o mermelada, o un croissant, entre las 8:00 y las 10:00. Como en México, la comida principal es a las 2:00 o las 3:00. Una diferencia notable es la cena: es más tarde en España, entre las 9:00 y las 11:00 de la noche.</p>
+                    <p>En los dos lugares, muchas personas meriendan entre la comida y la cena. La merienda normalmente es algo dulce, como pastel con café o té, o para los niños un chocolate caliente.</p>
+                    <table>
+                        <thead>
+                            <tr><th>País</th><th>Desayuno</th><th>Comida principal</th><th>Cena</th><th>Merienda</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>México</td><td>8:00 o 10:00</td><td>2:00 p. m.</td><td>8:00 p. m.</td><td>Algo dulce</td></tr>
+                            <tr><td>España</td><td>8:00-10:00</td><td>2:00-3:00 p. m.</td><td>9:00-11:00 p. m.</td><td>Pastel, café o té</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="image-wrapper">
+                        <img src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files11/shutterstock_152099999.png" alt="Horario de comidas">
+                    </div>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U4 · Página 238</span>
+                    <h2 class="card-title">La historia de la barbacoa</h2>
+                </header>
+                <div class="card-body">
+                    <p>The history of barbecue in the Americas goes back more than 500 years and begins with Taíno cooking traditions.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>La carne a la parrilla con salsa es parte de la gastronomía de los Estados Unidos y un símbolo importante de la identidad regional. Varios estados aseguran haber inventado este platillo, pero su historia es mucho más antigua.</p>
+                    <p>Cuando Cristóbal Colón llega al Caribe en 1492, los taínos de la Española usan el humo de un fuego de madera para cocinar la carne lentamente. Los españoles toman la palabra taína para esta técnica: <strong>barbacoa</strong>.</p>
+                    <p>En 1540, el explorador español Hernando de Soto introduce el cerdo a la región sureña de Norteamérica. Después, los españoles y los colonos ingleses adoptan esta manera de cocinar y añaden ingredientes como la pimienta y la salsa de tomate.</p>
+                    <p>Así que la carne preparada con la técnica barbacoa tiene una historia de más de 500 años en el Hemisferio Occidental.</p>
+                    <div class="image-wrapper">
+                        <img src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files11/shutterstock_177208400.png" alt="Parrilla de barbacoa">
+                    </div>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U4 · Página 243</span>
+                    <h2 class="card-title">Una cadena de comida rápida</h2>
+                </header>
+                <div class="card-body">
+                    <p>Salsarita's grew by combining fresh ingredients, customizable dishes, and an experience inspired by Mexican food traditions.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>Los tradicionales burritos, tacos, nachos, quesadillas, enchiladas, ensaladas y chips mexicanos al estilo “Cantina Fresca” han convertido a Salsarita’s en una de las cadenas de restaurantes de comida rápida de mayor crecimiento del país.</p>
+                    <p>El nombre Salsarita’s provino de “Salsa, que denota baile, y Rita, bebidas, como la Margarita”. La franquicia fue fundada en Charlotte en el año 2000 por Bruce Willette y Thang Nguyen, quienes viajaron por varias zonas de México en búsqueda de los sabores y colores propios de la comida mexicana para crear recetas únicas.</p>
+                    <p>La cadena ofrece una variedad de platillos: el mismo cliente puede seleccionar sus ingredientes, el tipo de carne, frijoles, arroz, salsa o tortilla para su burrito, quesadilla, pizza o ensalada, al igual que la cantidad.</p>
+                    <p>Esa filosofía de “mi casa es tu casa” de ofrecer comida fresca, nutritiva, en un ambiente acogedor, divertido, colorido y festivo es lo que ha permitido que la cadena continúe aumentando su presencia a nivel nacional.</p>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U5 · Página 255</span>
+                    <h2 class="card-title">El español caribeño</h2>
+                </header>
+                <div class="card-body">
+                    <p>The Spanish of the Caribbean has recognizable pronunciation features that signal regional identity.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>El español del Caribe, hablado en la República Dominicana, Puerto Rico, Cuba y Venezuela, tiene rasgos que lo distinguen de otras variedades del idioma.</p>
+                    <ul>
+                        <li>La <strong>s</strong> al final de una sílaba puede sonar como <strong>h</strong>, o no pronunciarse.</li>
+                        <li>No hay inversión en preguntas: el orden de las palabras es el mismo que en las oraciones afirmativas.</li>
+                        <li>La <strong>r</strong> final puede pronunciarse como <strong>l</strong>.</li>
+                    </ul>
+                    <p>Of course, caribeños learn standard Spanish in school and spell words the same as in other countries. The same person may vary pronunciation according to the situation, and these regional features emphasize a shared Caribbean identity in informal settings.</p>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U5 · Página 271</span>
+                    <h2 class="card-title">El béisbol en la República Dominicana</h2>
+                </header>
+                <div class="card-body">
+                    <p>Béisbol is the official sport of the Dominican Republic and a major part of national pride.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>El béisbol, o la pelota, es el deporte oficial de la República Dominicana. Este deporte llega al país a finales del siglo XIX convirtiéndose en uno de los pasatiempos más populares de la época.</p>
+                    <p>Hoy en día, los dominicanos cuentan con unos de los beisbolistas más populares del mundo. Peloteros dominicanos profesionales juegan fuera del país con ligas profesionales en los Estados Unidos, Japón, Canadá y otros países donde este deporte es de gran demanda popular.</p>
+                    <p>Se dice que la República Dominicana es el mayor exportador de jugadores de béisbol. Hasta el momento hay 76 jugadores en la historia de la Liga Mayor de Béisbol que nacieron en San Pedro de Macorís.</p>
+                    <div class="image-wrapper">
+                        <img src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files11/l1u5_baseball_p271.png" alt="Béisbol en la República Dominicana">
+                    </div>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U5 · Página 277</span>
+                    <h2 class="card-title">Cómo chatear en español</h2>
+                </header>
+                <div class="card-body">
+                    <p>Spanish chat language uses abbreviations, omitted vowels, and symbols to communicate quickly and creatively.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>El lenguaje del chat en español es algo nuevo, y los jóvenes de todos los países hispanohablantes contribuyen con mucha creatividad a esta manera de comunicarse.</p>
+                    <p>No hay reglas fijas, solo tendencias.</p>
+                    <table>
+                        <thead>
+                            <tr><th>Tipo</th><th>Ejemplos</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Letras mudas omitidas</td><td>ola = hola, aora = ahora</td></tr>
+                            <tr><td>Vocales omitidas</td><td>vms a l plicla, tngo q ir, cm smpr</td></tr>
+                            <tr><td>K y x</td><td>x fv, xq, amigx, xao, bns noxs, ak</td></tr>
+                            <tr><td>Símbolos</td><td>t veo + trde, to2 ls ds, salu2</td></tr>
+                            <tr><td>Emoticones</td><td>:) = estoy contento, :( = estoy triste</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U5 · Página 291</span>
+                    <h2 class="card-title">Carnaval de La Vega, R. D.</h2>
+                </header>
+                <div class="card-body">
+                    <p>La Vega's carnival is considered one of the best celebrations in the Dominican Republic and the Caribbean.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>El carnaval de La Vega es considerado como el mejor del país y del Caribe.</p>
+                    <p>Todos los años atrae a miles de personas. En 1547 se establece la tradición del carnaval en La Vega y, en 1977, la Cámara de Diputados de la República Dominicana lo reconoce como Patrimonio Folklórico del país.</p>
+                    <p>Durante la temporada de carnaval, hay actividades todos los domingos desde enero hasta marzo. La gente disfrazada de diablos cojuelos llevan ropas de colores muy llamativos y salen a la calle para participar en los desfiles, ver las carrozas y divertirse, pero sobre todo a disfrutar.</p>
+                    <div class="image-wrapper">
+                        <img src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files11/shutterstock_14406187.png" alt="Carnaval de La Vega">
+                    </div>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U5 · Página 292</span>
+                    <h2 class="card-title">Gran Celebración en Nueva York</h2>
+                </header>
+                <div class="card-body">
+                    <p>The Dominican Parade in the Bronx celebrates Dominican identity with floats, music, and community pride.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>Una vez más el tradicional desfile va a ocurrir a fines del mes de julio en el llamado condado de la salsa en el Bronx de Nueva York. Como de costumbre, las calles se van a vestir de los colores rojo, azul y blanco para conmemorar un año más del Desfile Dominicano en El Bronx.</p>
+                    <p>El recorrido de la Gran Parada va a ser desde La avenida Este de Tremond hasta la calle 167 como en los 26 años de su celebración.</p>
+                    <p>En los últimos años, muchas carrozas, comparsas, bandas y orquestas musicales han participado. Se espera que este año 20 o más carrozas participen. Es muy común ver a muchas celebridades, así como a muchas cadenas de televisión que estarán reportando y cubriendo el evento en vivo desde las calles del condado de la salsa.</p>
+                    <p>Los dominicanos residentes de la urbe neoyorquina y todas las personas que quieran participar en esta parada van a poder disfrutar de este evento por más de cuatro horas a partir de la 1:00 de la tarde.</p>
+                    <div class="image-wrapper">
+                        <img src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files11/screen_shot_2016-12-07_at_4.56.13_pm_copy.png" alt="Desfile dominicano en Nueva York">
+                    </div>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U5 · Página 297</span>
+                    <h2 class="card-title">El dominó</h2>
+                </header>
+                <div class="card-body">
+                    <p>Dominoes are a key part of Dominican identity and a familiar sight in public plazas.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>El juego de dominó es un elemento muy importante para la identidad dominicana. Por las tardes, es típico ver a grupos de personas en las plazas jugando una partida de dominó.</p>
+                    <p>Además de ser una forma de entretenimiento que se practica entre grupos grandes o pequeños, el dominó es una disciplina que brinda elementos importantes como lo deportivo, lo cultural y lo educativo a la cultura de los dominicanos. En 2010 se declaró como Deporte Nacional por ser el juego más practicado en el país.</p>
+                    <div class="image-wrapper">
+                        <img src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files11/shutterstock_240407311.png" alt="Juego de dominó">
+                    </div>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U6 · Página 313</span>
+                    <h2 class="card-title">Naciones y regiones culturales</h2>
+                </header>
+                <div class="card-body">
+                    <p>Geographical and cultural regions can shape identity more strongly than national borders.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>We tend to think of nations or countries as the primary divisions of a continent, but geographical and cultural regions may have a bigger impact on people’s identity and how they live. Colombia, for example, is actually a collection of very different environments.</p>
+                    <p>Each region has a distinct history, varied cultural practices, and even a different variety of Spanish. National boundaries do not always match cultural boundaries, and lowland and highland regions across Colombia and Venezuela often share cultural and language features with neighbors across the border.</p>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U6 · Página 316</span>
+                    <h2 class="card-title">La escala centígrada o Celsius</h2>
+                </header>
+                <div class="card-body">
+                    <p>Most of the world uses Celsius, and the chart helps compare familiar temperature reference points.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>En Estados Unidos se usa la escala Fahrenheit para las temperaturas, pero en el resto del mundo encontramos grados Celsius. No es necesario aprender la fórmula para calcular los equivalentes.</p>
+                    <p>Es más fácil recordar algunos puntos de referencia importantes, como los del gráfico.</p>
+                    <div class="image-wrapper">
+                        <img src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files12/.crops/l1u6_thermometer_p316_55213539c92d47dab750fa600b19759f.png" alt="Escala Celsius">
+                    </div>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U6 · Página 333</span>
+                    <h2 class="card-title">Discover Ways to Use Spanish Outside Class</h2>
+                </header>
+                <div class="card-body">
+                    <p>You can keep building Spanish skills by using the language in your community, online, and through your hobbies.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>In your community and online, you can find many ways to enjoy using and increasing your Spanish skills.</p>
+                    <p>Look for brochures in Spanish in museums, libraries, stores, and offices. Visit restaurants and attend festivals with foods from Spanish-speaking countries. Read a translation of a favorite book or watch a movie you know well, but set the language to Spanish.</p>
+                    <p>Go to a music site online and check out the top 10 song playlist in a Spanish-speaking country. Listen to the songs, find one you like, and search for the lyrics. If you have a hobby, explore websites in Spanish relating to your passion. If you like to cook, watch cooking videos in Spanish.</p>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U6 · Página 343</span>
+                    <h2 class="card-title">La Ciclovía de Bogotá</h2>
+                </header>
+                <div class="card-body">
+                    <p>Bogotá's Ciclovía closes major roads every Sunday and holiday so cyclists and pedestrians can use the city safely.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>La Ciclovía es un evento regular en Bogotá. Todos los domingos y días festivos del año, de las 7:00 a.m. a las 2:00 p.m., las principales vías de la ciudad están cerradas a los automóviles.</p>
+                    <p>Se crea un circuito interconectado de más de 121 kilómetros de extensión, sólo para bicicletas y peatones, que cubre todos los sectores de la ciudad.</p>
+                    <div class="image-wrapper">
+                        <img src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files12/shutterstock_299174684.png" alt="Ciclovía de Bogotá">
+                    </div>
+                </div>
+            </article>
+
+            <article class="cultura-card" onclick="openModal(this)">
+                <header class="card-header">
+                    <span class="page-tag">U6 · Página 348</span>
+                    <h2 class="card-title">La globalización—ayer y hoy</h2>
+                </header>
+                <div class="card-body">
+                    <p>Globalization is not new: explorers, trade routes, and movement across oceans connected continents centuries ago.</p>
+                </div>
+                <div class="card-fade">
+                    <span class="expand-hint"><i class="ph-bold ph-arrows-out"></i> Read More</span>
+                </div>
+                <div class="modal-content-data">
+                    <p>La globalización no es un fenómeno reciente. En el siglo XVI, los exploradores europeos empiezan a cruzar el Atlántico y el Pacífico, conectando los continentes. Personas y productos de Asia, América, Europa y África entran en contacto, iniciando el comercio global.</p>
+                    <p>Especias, seda y porcelana cruzan el Pacífico desde China, y los galeones españoles llevan oro, plata, vainilla, chocolate y tabaco de América a Sevilla, España.</p>
+                    <p>En esta época, los piratas aterrorizan a todo el Caribe y, junto con los huracanes y los arrecifes, causan pérdidas al comercio. Las fortificaciones españolas en el Caribe son un elemento fundamental para la protección del comercio global.</p>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="culturaModal" onclick="closeModal(event)">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-header-titles">
+                    <span class="page-tag" id="modalTag">U0 · Página 0</span>
+                    <h2 class="card-title" id="modalTitle" style="font-size: 1.5rem;">Title</h2>
+                </div>
+                <button class="modal-close-btn" onclick="closeModal()">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        function loadThemePreference() {
+            const isDark = localStorage.getItem('darkTheme') === 'true';
+            if (isDark) {
+                document.body.classList.add('dark-theme');
+            }
+            updateThemeIcon(isDark);
+        }
+
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-theme');
+            localStorage.setItem('darkTheme', isDark);
+            updateThemeIcon(isDark);
+        }
+
+        function updateThemeIcon(isDark) {
+            const icon = document.getElementById('themeIcon');
+            if(isDark) {
+                icon.className = 'ph-fill ph-sun';
+            } else {
+                icon.className = 'ph-fill ph-moon';
+            }
+        }
+
+        const modal = document.getElementById('culturaModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalTag = document.getElementById('modalTag');
+        const modalBody = document.getElementById('modalBody');
+
+        function openModal(cardElement) {
+            const title = cardElement.querySelector('.card-title').innerText;
+            const tag = cardElement.querySelector('.page-tag').innerText;
+            const contentHTML = cardElement.querySelector('.modal-content-data').innerHTML;
+
+            modalTitle.innerText = title;
+            modalTag.innerText = tag;
+            modalBody.innerHTML = contentHTML;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(event) {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            
+            setTimeout(() => {
+                modalBody.innerHTML = '';
+            }, 300);
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+
+        window.onload = loadThemePreference;
+    </script>
+</body>
+</html>
